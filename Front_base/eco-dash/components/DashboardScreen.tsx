@@ -200,10 +200,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
-          
-          <div className="lg:col-span-2 flex flex-col gap-8">
-            <div className="bg-gradient-to-br from-green-500 via-emerald-600 to-green-700 p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(4,120,87,0.6)] border border-white/10 transition-all duration-500 relative overflow-hidden group hover:-translate-y-1">
+        <div className="mb-8 bg-gradient-to-br from-green-500 via-emerald-600 to-green-700 p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(4,120,87,0.6)] border border-white/10 transition-all duration-500 relative overflow-hidden group hover:-translate-y-1">
               <div className="absolute -right-20 -top-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
               <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
               <div className="absolute -right-6 -top-6 text-white/20 group-hover:rotate-12 transition-transform duration-700">
@@ -221,6 +218,11 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 </div>
               </div>
             </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
+          
+          <div className="lg:col-span-2 flex flex-col gap-8">
+            
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
