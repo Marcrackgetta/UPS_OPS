@@ -155,7 +155,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         .slider-salud::-webkit-slider-thumb { border: 3px solid #ea580c; }
       `}</style>
 
-      <div className={`max-w-6xl mx-auto transition-all duration-1000 transform relative z-10 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+      <div className={`max-w-6xl mx-auto transition-all duration-1000 transform relative z-10 pb-16 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
           <div>
@@ -311,39 +311,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </div>
 
             
-            <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
-              <h2 className="text-xl font-black text-stone-800 mb-5 flex items-center gap-2">
-                <Leaf className="w-6 h-6 text-green-600"/> Siembra una acción
-              </h2>
-              
-              <div className="flex flex-col gap-4">
-                
-                
-                {acciones.map((acc, idx) => {
-                  const iconMap: Record<string, any> = { 'clima': AnimatedWindIcon, 'salud': AnimatedHeartIcon, 'default': Leaf };
-                  const IconCmp = iconMap[acc.categoria?.toLowerCase() || 'default'] || Leaf;
-                  return (
-                    <button 
-                      key={acc.id}
-                      onClick={() => handleAction(acc.id)}
-                      className="group relative overflow-hidden flex items-center gap-5 bg-white border-2 p-4 rounded-2xl transition-all duration-300 text-left border-green-100 hover:border-green-400 active:scale-[0.97] shadow-sm hover:shadow-[0_10px_20px_rgba(74,222,128,0.3)]"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out z-0" />
-                      <div className="bg-gradient-to-br from-green-400 to-emerald-600 p-3 rounded-xl shadow-lg shadow-green-500/40 z-10 transition-transform text-white border border-green-300">
-                        <IconCmp className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="z-10">
-                        <h3 className="font-black text-lg text-stone-800 group-hover:text-green-900 transition-colors">
-                          {acc.titulo}
-                        </h3>
-                        <p className="text-stone-500 text-sm font-bold">+{acc.impacto_co2_kg}kg CO2 | +{acc.xp_otorgada} XP</p>
-                      </div>
-                    </button>
-                  );
-                })}
-
-              </div>
-            </div>
+            
 
             {showReward && (
               <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-7 rounded-[2rem] shadow-[0_15px_40px_rgba(253,224,71,0.5)] animate-in slide-in-from-bottom-8 duration-500 hover:scale-105 hover:shadow-[0_20px_50px_rgba(253,224,71,0.7)] transition-all cursor-default">
@@ -389,6 +357,42 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
           </div>
         </div>
+      
+        {/* BOTTOM GRID: CATALOG (SIEMBRA UNA ACCION) */}
+        <div className="mt-8 bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
+              <h2 className="text-xl font-black text-stone-800 mb-5 flex items-center gap-2">
+                <Leaf className="w-6 h-6 text-green-600"/> Siembra una acción
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+                
+                {acciones.map((acc, idx) => {
+                  const iconMap: Record<string, any> = { 'clima': AnimatedWindIcon, 'salud': AnimatedHeartIcon, 'default': Leaf };
+                  const IconCmp = iconMap[acc.categoria?.toLowerCase() || 'default'] || Leaf;
+                  return (
+                    <button 
+                      key={acc.id}
+                      onClick={() => handleAction(acc.id)}
+                      className="group relative overflow-hidden flex items-center gap-5 bg-white border-2 p-4 rounded-2xl transition-all duration-300 text-left border-green-100 hover:border-green-400 active:scale-[0.97] shadow-sm hover:shadow-[0_10px_20px_rgba(74,222,128,0.3)]"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out z-0" />
+                      <div className="bg-gradient-to-br from-green-400 to-emerald-600 p-3 rounded-xl shadow-lg shadow-green-500/40 z-10 transition-transform text-white border border-green-300">
+                        <IconCmp className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="z-10">
+                        <h3 className="font-black text-lg text-stone-800 group-hover:text-green-900 transition-colors">
+                          {acc.titulo}
+                        </h3>
+                        <p className="text-stone-500 text-sm font-bold">+{acc.impacto_co2_kg}kg CO2 | +{acc.xp_otorgada} XP</p>
+                      </div>
+                    </button>
+                  );
+                })}
+
+              </div>
+            </div>
+
       </div>
 
       {/* MODAL: AJUSTAR METAS */}
