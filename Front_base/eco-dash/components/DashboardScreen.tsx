@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
@@ -319,6 +321,28 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
           </div>
 
           <div className="flex flex-col gap-6">
+            <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
+              <h2 className="text-xl font-black text-stone-800 mb-5 flex items-center gap-2">
+                <Activity className="w-6 h-6 text-emerald-600"/> Desglose de Impacto
+              </h2>
+              <div className="h-48 w-full">
+                {desglose_grafico.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={desglose_grafico} dataKey="total_co2_kg" nameKey="categoria" cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={5}>
+                        {desglose_grafico.map((entry: any, index: number) => (
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-stone-400 font-medium">Sin datos registrados</div>
+                )}
+              </div>
+            </div>
+
             
             <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
               <h2 className="text-xl font-black text-stone-800 mb-5 flex items-center gap-2">
