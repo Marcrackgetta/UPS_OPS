@@ -2,9 +2,8 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
 
-# 1. Modelo de ENTRADA (Lo que Jordan y Narváez nos envían en el POST)
+# 1. Modelo de ENTRADA (Modificado en Fase 3 para no requerir usuario_id desde el cliente)
 class AccionRegistrar(BaseModel):
-    usuario_id: UUID = Field(..., description="ID único del usuario proveniente de Supabase Auth")
     accion_id: int = Field(..., description="ID de la acción en el catálogo (ej. 2 para Bicicleta)")
 
 # 2. Sub-modelos para estructurar la SALIDA

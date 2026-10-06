@@ -8,6 +8,7 @@ class Settings:
     PROJECT_NAME: str = "Kawsay Eco-Dash API"
     SUPABASE_URL: str = os.getenv("SUPABASE_URL")
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY")
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 # Instanciamos la clase para poder importarla en otros archivos
 settings = Settings()
