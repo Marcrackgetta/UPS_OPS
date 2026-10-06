@@ -5,7 +5,8 @@ import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useDashboard } from '../hooks/useDashboard';
 
-import { BookOpen, Flame, Leaf, Wind, Clock, TrendingUp, Target, X, CalendarDays, Sparkles, RefreshCw, Activity, HeartPulse, SlidersHorizontal } from 'lucide-react';
+import { BookOpen, Flame, Leaf, Wind, Clock, TrendingUp, Target, X, CalendarDays, Sparkles, RefreshCw, Activity, HeartPulse, SlidersHorizontal, Globe } from 'lucide-react';
+import Background from './Background';
 
 type HistoryItem = {
   id: number;
@@ -70,6 +71,18 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
     const { dashboard, acciones, loading, error, recompensa, showReward, handleAction, closeReward } = useDashboard();
   const [isLoaded, setIsLoaded] = useState(false);
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showVictoryModal, setShowVictoryModal] = useState(false);
+  const [victoryShown, setVictoryShown] = useState(false);
+
+  useEffect(() => {
+    const currentCo2 = dashboard?.impacto_global_co2 || 0;
+    const currentCal = dashboard?.impacto_global_calorias || 0;
+    if (currentCo2 >= goalCo2 && currentCal >= goalCalories && !victoryShown) {
+      setShowVictoryModal(true);
+      setVictoryShown(true);
+    }
+  }, [dashboard?.impacto_global_co2, dashboard?.impacto_global_calorias, victoryShown]);
+
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [goalCo2, setGoalCo2] = useState(20);
@@ -405,7 +418,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <div className="flex flex-col gap-8">
                 
                 {/* Meta de CO2 */}
-                <div className="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm">
+                <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
                   <div className="flex justify-between items-center mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <Wind className="w-5 h-5 text-green-600"/> CO2 Evitado
@@ -425,7 +438,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 </div>
 
                 {/* Meta de Calorías */}
-                <div className="bg-white p-6 rounded-3xl border border-stone-200 shadow-sm">
+                <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
                   <div className="flex justify-between items-center mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <HeartPulse className="w-5 h-5 text-orange-600"/> Calorías
@@ -561,6 +574,48 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               )}
             </div>
 
+          </div>
+        </div>
+      )}
+
+
+      {/* MODAL: VICTORIA TOTAL */}
+      {showVictoryModal && (
+        <div className="fixed inset-0 z-[100] bg-emerald-950/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-in fade-in duration-500">
+          <div className="relative w-full max-w-lg p-10 rounded-[3rem] shadow-[0_0_100px_rgba(234,179,8,0.5)] border-2 text-center overflow-hidden animate-in zoom-in-95 duration-500 bg-gradient-to-br from-emerald-600 via-green-500 to-orange-500 border-yellow-300">
+            <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
+            <div className="absolute -left-10 -top-10 w-48 h-48 bg-white opacity-20 rounded-full blur-3xl"></div>
+            <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-40 rounded-full blur-3xl"></div>
+
+            <div className="relative z-10 flex justify-center mb-6 gap-4">
+              <div className="bg-white/20 backdrop-blur-md p-5 rounded-full border border-white/50 shadow-2xl animar-latido-planeta">
+                <Globe className="w-10 h-10 text-white" />
+              </div>
+              <div className="bg-white/20 backdrop-blur-md p-5 rounded-full border border-white/50 shadow-2xl animar-latido-planeta" style={{ animationDelay: '0.5s' }}>
+                <HeartPulse className="w-10 h-10 text-white" />
+              </div>
+            </div>
+
+            <h2 className="relative z-10 text-4xl font-black text-white mb-2 drop-shadow-lg tracking-tight uppercase">
+              ¡DÍA SUPERADO!
+            </h2>
+            
+            <span className="relative z-10 inline-block bg-white/20 text-white font-bold px-4 py-1.5 rounded-full text-sm uppercase tracking-widest mb-6 border border-white/30 backdrop-blur-sm shadow-inner">
+              Has alcanzado tus metas de hoy y tu huella verde es un ejemplo para todos.
+            </span>
+            
+            <div className="relative z-10 bg-black/20 backdrop-blur-md p-5 rounded-2xl border border-white/20 shadow-inner mb-8">
+              <p className="text-white/95 font-medium text-base leading-relaxed italic drop-shadow-sm">
+                "El verdadero progreso no se mide por aquello que conquistamos, sino por la vida que logramos preservar. Cada decisión consciente que tomamos hoy, es el aliento de las generaciones del mañana."
+              </p>
+            </div>
+
+            <button 
+              onClick={() => setShowVictoryModal(false)}
+              className="relative z-10 w-full bg-white text-stone-900 hover:bg-stone-100 font-black uppercase tracking-widest text-sm py-4 rounded-2xl shadow-xl hover:shadow-[0_10px_30px_rgba(255,255,255,0.4)] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-5 h-5 text-yellow-500" /> ¡Continuar!
+            </button>
           </div>
         </div>
       )}
