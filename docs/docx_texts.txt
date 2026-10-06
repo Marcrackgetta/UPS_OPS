@@ -1,0 +1,97 @@
+=== Diseño web documento.docx ===
+Diseño Técnico, UX/UI y Fases de Desarrollo
+Proyecto: Kawsay Eco-Dash
+1. Definición del Proyecto y Alineación ODS
+Kawsay Eco-Dash es una plataforma web interactiva (Dashboard) diseñada para registrar, cuantificar y visualizar el impacto ambiental diario del estudiante. Su objetivo es transformar datos cotidianos en visualizaciones de impacto personal sin utilizar formularios complejos, apoyándose en una arquitectura donde la lógica del servidor alimenta directamente una interfaz limpia y gamificada, totalmente centrada en el progreso individual.
+El proyecto aborda tres Objetivos de Desarrollo Sostenible oficiales del concurso:
+ODS 13 (Acción por el Clima): Cuantificación y despliegue gráfico de kilogramos de CO2 evitados mediante acciones sostenibles individuales.
+ODS 3 (Salud y Bienestar): Traducción de la movilidad activa (caminata/bicicleta) a métricas de impacto en la salud cardiovascular y calorías.
+ODS 4 (Educación de Calidad): Integración de micro-lecciones dinámicas generadas en formato de tarjetas interactivas como recompensa por el registro de datos.
+2. Experiencia de Usuario (UX) e Interfaz (UI)
+El diseño se estructurará bajo los criterios de evaluación del jurado, priorizando la accesibilidad, la innovación y la correcta organización de la información.
+Estética Visual: Diseño corporativo moderno con Dark Mode (Modo Oscuro) por defecto, utilizando acentos de colores neón (verdes para impacto ambiental, azules para salud).
+Módulo de Interacción Rápida: Sustitución de cajas de texto por un sistema de tarjetas (Cards) con botones de un solo clic para registrar hábitos (ej. "Apagar A/C", "Movilidad Activa").
+Visualización de Datos (Data Storytelling): Implementación de gráficos de anillos (Donut charts) en el centro de la pantalla principal para resumir el impacto del usuario, junto con barras de progreso que indican la racha de días consecutivos.
+
+========================================
+=== Estructura Técnica y Guía de Operaciones competencia UPS.docx ===
+Estructura Técnica y Guía de Operaciones
+1. Cómo Funciona Kawsay Eco-Dash (Flujo de Arquitectura)
+La plataforma opera bajo un modelo de "Experiencia Impulsada por el Backend" (Backend-Driven UX). Esto libera de carga lógica al cliente web para mantenerlo rápido y visualmente atractivo.
+El usuario inicia sesión en el Frontend (Next.js).
+El estudiante hace clic en un botón de acción rápida en la interfaz.
+El Frontend envía únicamente un ID de acción y un ID de usuario mediante una petición POST al Backend (FastAPI).
+El Backend procesa la matemática (calcula el CO2, suma los puntos de experiencia, desbloquea recompensas) y actualiza la Base de Datos (Supabase).
+El Backend devuelve al Frontend un paquete JSON completo con los datos personales ya calculados.
+El Frontend actualiza inmediatamente los gráficos y las tarjetas en pantalla sin necesidad de recargar la página.
+2. División de Responsabilidades y Herramientas
+Equipo de Frontend (Jordan y Narváez) Responsables de la interfaz, el diseño de interacción, la accesibilidad visual y la presentación del cliente final.
+Prototipado: Figma (para maquetar todas las vistas antes de programar).
+Framework Principal: Next.js o React.js.
+Estilos: Tailwind CSS.
+Librería de Gráficos: Chart.js, Recharts o Tremor (para visualizar el impacto personal).
+Hosting: Vercel (despliegue automático y enlace funcional).
+Equipo de Backend (Marcelo Zambrano) Responsable de la lógica de negocio, cálculos matemáticos, seguridad, base de datos y procesamiento de API.
+Framework de API: FastAPI (Python) ejecutado con Uvicorn.
+Base de Datos y Autenticación: Supabase (PostgreSQL y Supabase Auth).
+Documentación de API: Swagger UI (autogenerado por FastAPI para que Jordan y Narváez consulten los endpoints).
+Hosting: Render o Railway (para mantener la API de Python en línea).
+3. Estructura de la Base de Datos (Supabase)
+El proyecto requiere una arquitectura relacional mínima centrada exclusivamente en el usuario individual:
+Tabla usuarios: Almacena credenciales, nivel actual, experiencia total acumulada y racha de días activos.
+Tabla catalogo_acciones: Contiene los valores fijos de cada hábito. Columnas clave: id_accion, nombre_accion, factor_co2_kg, factor_calorias.
+Tabla registros_actividad: Historial inmutable que conecta al usuario con la acción y la marca de tiempo (timestamp), permitiendo generar las gráficas del dashboard personal.
+
+========================================
+=== Guía Técnica y Manual de API - Kawsay Eco-Dash.docx ===
+Documentación Técnica: Arquitectura Backend y Consumo de API
+Proyecto: Kawsay Eco-Dash
+Autor: Marcelo Humberto Zambrano Aguirre (Backend)
+1. Visión General de la Arquitectura
+El backend de Kawsay Eco-Dash está construido utilizando FastAPI (Python) y Supabase (PostgreSQL). Se ha implementado un patrón de diseño basado en Arquitectura Limpia (Clean Architecture) y separación de responsabilidades (SRP).
+Esto significa que el servidor no es un solo bloque de código, sino que está dividido en capas especializadas: configuración, conexión a datos, modelos de validación, lógica matemática y enrutadores web. Esta estructura garantiza seguridad, velocidad y facilidad de mantenimiento.
+2. Explicación del Árbol de Directorios y Archivos
+El proyecto está organizado dentro de la carpeta app/. A continuación, se detalla el funcionamiento exacto de cada archivo creado:
+📍 Raíz de la Aplicación
+main.py: Es el punto de entrada principal del servidor. Su única responsabilidad es inicializar la aplicación FastAPI, configurar los permisos de seguridad CORS (Crucial para que el frontend pueda comunicarse sin bloqueos) y registrar los enrutadores (acciones_router y dashboard_router).
+📂 Capa de Configuración (app/core/)
+config.py: Lee de forma segura el archivo oculto .env. Evita que las contraseñas de la base de datos queden expuestas en el código fuente.
+database.py: Utiliza las credenciales de config.py para establecer la conexión oficial con Supabase. Exporta el objeto supabase, el cual es utilizado por el resto de la aplicación para guardar o leer datos en PostgreSQL.
+📂 Capa de Validación y Contratos (app/schemas/)
+Esta capa utiliza la librería Pydantic. Actúa como una "aduana" que verifica que los datos que entran y salen de la API tengan el formato correcto.
+accion.py: Define qué debe enviar el frontend (un usuario_id y un accion_id) y estructura el gran JSON de respuesta (Impacto, Gamificación y Recompensas Educativas).
+dashboard.py: Define la estructura del resumen total del usuario, creando modelos que formatean los datos específicamente para que librerías gráficas (como Chart.js) puedan consumirlos sin esfuerzo.
+📂 Capa de Lógica de Negocio (app/services/)
+Aquí reside el valor intelectual y algorítmico del proyecto. Son funciones matemáticas puras que no tocan internet ni la base de datos.
+metricas_service.py: Calcula el impacto de los ODS 13 y 3. Toma los factores base (ej. kilogramos de ) y aplica bonificaciones matemáticas si el usuario mantiene una buena racha de uso.
+racha_service.py: Motor de gamificación. Calcula el progreso del nivel utilizando una curva exponencial () y maneja la máquina de estados de las fechas para evitar que un usuario haga trampa sumando días falsos.
+📂 Capa de Transporte/Web (app/routers/)
+Son los controladores que reciben la petición HTTP desde el navegador de los usuarios.
+acciones_router.py: Expone las rutas /api/v1/acciones. Orquesta todo el flujo: valida si la acción existe, llama a los servicios matemáticos para calcular el impacto, guarda el historial en Supabase y devuelve el JSON formateado.
+dashboard_router.py: Expone la ruta /api/v1/dashboard. Extrae todo el historial de un usuario, suma su impacto histórico y lo agrupa por categorías para pintar el gráfico principal de la interfaz.
+3. Manual de Consumo para el Equipo Frontend (Jordan y Narváez)
+Este manual define cómo el cliente web (Next.js/React) debe comunicarse con el servidor Backend.
+URL Base de Pruebas: http://127.0.0.1:8000
+Documentación Interactiva (Swagger): http://127.0.0.1:8000/docs
+A. Consideraciones Previas (Autenticación)
+El frontend es responsable del Login/Registro utilizando el SDK cliente de Supabase (@supabase/supabase-js). Una vez que el usuario inicia sesión, el frontend obtendrá un usuario_id (UUID). Este ID es obligatorio para usar los endpoints del backend.
+B. Endpoint 1: Obtener los botones de acciones
+Al cargar la página, el frontend debe consultar qué acciones existen para renderizar los botones.
+Método: GET
+Ruta: /api/v1/acciones/
+Ejemplo de uso en Frontend (JavaScript/Fetch):
+const obtenerAcciones = async () => {    const res = await fetch("http://127.0.0.1:8000/api/v1/acciones/");    const json = await res.json();    console.log(json.data); // Array con los botones a renderizar};
+C. Endpoint 2: Registrar una acción (Al hacer clic en un botón)
+Cuando el usuario da clic en un botón ambiental, el frontend hace un POST. El backend hará toda la matemática y devolverá los datos listos para mostrar notificaciones o animaciones de subida de nivel.
+Método: POST
+Ruta: /api/v1/acciones/registrar
+Ejemplo de uso en Frontend:
+const registrarHabito = async (userId, actionId) => {    const res = await fetch("http://127.0.0.1:8000/api/v1/acciones/registrar", {        method: "POST",        headers: { "Content-Type": "application/json" },        body: JSON.stringify({            usuario_id: userId,            accion_id: actionId        })    });        const respuestaBackend = await res.json();        // El frontend usa estos datos devueltos para mostrar alertas de éxito    if (respuestaBackend.estado_usuario.subio_de_nivel) {        alert(`¡Felicidades! Eres nivel ${respuestaBackend.estado_usuario.nivel_actual}`);    }        if (respuestaBackend.recompensa_educativa) {        mostrarModalCuriosidad(respuestaBackend.recompensa_educativa.contenido);    }};
+D. Endpoint 3: Cargar el Dashboard Principal
+Para la pantalla principal (Donut Charts, total de CO2 ahorrado), el frontend solo debe hacer una petición pasando el ID del usuario en la URL.
+Método: GET
+Ruta: /api/v1/dashboard/{usuario_id}
+Ejemplo de uso en Frontend:
+const cargarDashboard = async (userId) => {    const res = await fetch(`http://127.0.0.1:8000/api/v1/dashboard/${userId}`);    const dashboardData = await res.json();        // Pintar los valores en pantalla    document.getElementById("co2-total").innerText = dashboardData.impacto_global_co2 + " kg";    document.getElementById("nivel").innerText = dashboardData.nivel_actual;        // Usar dashboardData.desglose_grafico directamente en Chart.js o Recharts    console.log(dashboardData.desglose_grafico); };
+
+========================================
