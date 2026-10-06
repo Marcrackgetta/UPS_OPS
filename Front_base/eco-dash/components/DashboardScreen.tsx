@@ -85,6 +85,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showCuriositiesModal, setShowCuriositiesModal] = useState(false);
   const [goalCo2, setGoalCo2] = useState(20);
   const [goalCalories, setGoalCalories] = useState(2000);
 
@@ -96,7 +97,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
     return <div className="min-h-screen bg-gradient-to-br from-emerald-950 to-teal-950 flex items-center justify-center text-white">Cargando tu progreso...</div>;
   }
 
-  const co2 = dashboard.impacto_global_co2 || 0;
+  const co2 = Number((dashboard.impacto_global_co2 || 0).toFixed(2));
   const calories = dashboard.impacto_global_calorias || 0;
   const streak = dashboard.racha_dias || 0;
   const totalScore = dashboard.xp_total || 0;
@@ -189,10 +190,10 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </button>
             <button 
               onClick={onLogout}
-              className="group flex items-center gap-2 bg-rose-500/10 backdrop-blur-xl px-4 py-3 rounded-full border border-rose-500/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-rose-500 hover:border-rose-400 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-rose-200 hover:text-white font-bold text-sm justify-center"
-              title="Cerrar sesión"
+              className="group flex items-center gap-2 bg-rose-500/20 backdrop-blur-xl px-5 py-3 rounded-full border border-rose-500/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-rose-500 hover:border-rose-400 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-rose-100 hover:text-white font-bold text-sm justify-center"
             >
               <RefreshCw className="w-4 h-4 group-hover:-rotate-180 transition-transform duration-500" />
+              <span>Cerrar Sesión</span>
             </button>
 
           </div>
@@ -330,6 +331,12 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               >
                 <CalendarDays className="w-5 h-5" /> Ver todo mi historial
               </button>
+              <button 
+                onClick={() => setShowCuriositiesModal(true)}
+                className="w-full py-4 rounded-2xl bg-yellow-400/20 backdrop-blur-xl border border-yellow-400/40 hover:bg-yellow-400 text-yellow-100 hover:text-yellow-900 font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-[0_10px_30px_rgba(253,224,71,0.3)] active:scale-95 mt-3"
+              >
+                <Sparkles className="w-5 h-5" /> Curiosidades ODS
+              </button>
             </div>
 
           </div>
@@ -372,32 +379,40 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
       </div>
 
-      {showReward && (
-              <div className="fixed bottom-8 right-8 z-50 max-w-sm group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-7 rounded-[2rem] shadow-[0_15px_40px_rgba(253,224,71,0.5)] animate-in slide-in-from-bottom-8 duration-500 hover:scale-105 hover:shadow-[0_20px_50px_rgba(253,224,71,0.7)] transition-all cursor-default">
-                <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
-                
-                <button onClick={closeReward} className="absolute top-4 right-4 z-20 text-yellow-600 hover:text-yellow-900 bg-yellow-200/50 hover:bg-yellow-300 p-1.5 rounded-full transition-all"><X className="w-4 h-4"/></button>
-                <div className="absolute -right-4 -top-4 w-32 h-32 bg-yellow-400 opacity-40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-                
-                <div className="flex items-center gap-4 mb-4 relative z-10">
-                  <div className="bg-gradient-to-br from-yellow-400 to-amber-500 p-4 rounded-2xl shadow-lg shadow-yellow-500/50 text-white border border-yellow-300 animar-libro group-hover:-rotate-12 transition-transform">
-                    <BookOpen className="w-7 h-7 drop-shadow-md" />
-                  </div>
-                  <div>
-                    <span className="text-yellow-800 font-black text-xs uppercase tracking-widest flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-orange-600 animate-pulse" /> Recompensa ODS 4
-                    </span>
-                    <h3 className="font-black text-stone-800 text-xl leading-none mt-1 group-hover:text-amber-700 transition-colors">Semilla de Saber</h3>
-                  </div>
-                </div>
-                
-                <div className="relative z-10 bg-white/40 backdrop-blur-md p-4 rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/60 transition-colors">
-                  <p className="text-yellow-950 font-bold text-sm leading-relaxed">
-                    Caminar 30 mins diarios reduce tu huella de carbono a cero y cuida tu corazón. ¡Cada paso es un respiro para el planeta!
-                  </p>
-                </div>
+      
+
+      
+      {/* MODAL: CURIOSIDADES / RECOMPENSA */}
+      {(showReward || showCuriositiesModal) && (
+        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-8 rounded-[2rem] shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in zoom-in-95 duration-400 w-full max-w-md">
+            <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
+            <div className="absolute -right-4 -top-4 w-32 h-32 bg-yellow-400 opacity-40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            
+            <button onClick={() => { closeReward(); setShowCuriositiesModal(false); }} className="absolute top-4 right-4 z-20 text-yellow-600 hover:text-yellow-900 bg-yellow-200/50 hover:bg-yellow-300 p-2 rounded-full transition-all">
+              <X className="w-5 h-5"/>
+            </button>
+
+            <div className="flex items-center gap-4 mb-5 relative z-10">
+              <div className="bg-gradient-to-br from-yellow-400 to-amber-500 p-4 rounded-2xl shadow-lg shadow-yellow-500/50 text-white border border-yellow-300 animar-libro group-hover:-rotate-12 transition-transform">
+                <BookOpen className="w-8 h-8 drop-shadow-md" />
               </div>
-            )}
+              <div>
+                <span className="text-yellow-800 font-black text-xs uppercase tracking-widest flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-orange-600 animate-pulse" /> Sabías que...
+                </span>
+                <h3 className="font-black text-stone-800 text-2xl leading-none mt-1 group-hover:text-amber-700 transition-colors">Curiosidad ODS 4</h3>
+              </div>
+            </div>
+            
+            <div className="relative z-10 bg-white/40 backdrop-blur-md p-5 rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/60 transition-colors">
+              <p className="text-yellow-950 font-bold text-base leading-relaxed">
+                Caminar 30 mins diarios reduce tu huella de carbono a cero y cuida tu corazón. ¡Cada paso es un respiro para el planeta!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MODAL: AJUSTAR METAS */}
       {showGoalModal && (
