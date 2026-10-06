@@ -221,12 +221,12 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
           
-          <div className="lg:col-span-2 flex flex-col gap-8">
+          <div className="lg:col-span-2 h-full">
             
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
               
-              <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-green-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+              <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-green-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
                 <div>
                   <div className="flex justify-between items-start mb-6">
                     <div className="bg-gradient-to-br from-green-100 to-green-200 p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
@@ -261,7 +261,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 )}
               </div>
 
-              <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between">
+              <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
                 <div>
                   <div className="flex justify-between items-start mb-6">
                     <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
