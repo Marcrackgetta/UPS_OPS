@@ -3,7 +3,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
-import { getDashboard, getCatalogoAcciones, registrarAccion } from '../lib/api';
+import { useDashboard } from '../hooks/useDashboard';
 
 import { BookOpen, Flame, Leaf, Wind, Clock, TrendingUp, Target, X, CalendarDays, Sparkles, RefreshCw, Activity, HeartPulse, SlidersHorizontal } from 'lucide-react';
 
@@ -67,63 +67,17 @@ const AutumnLeaves = () => {
 export default function DashboardScreen({ onLogout }: { onLogout: () => void }) {
   // Estados iniciales un poquito más bajos para que puedas probar el límite rápido
   
+    const { dashboard, acciones, loading, error, recompensa, showReward, handleAction, closeReward } = useDashboard();
   const [isLoaded, setIsLoaded] = useState(false);
-  const [dashboard, setDashboard] = useState<any>(null);
-  const [acciones, setAcciones] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showReward, setShowReward] = useState(false);
-  const [recompensa, setRecompensa] = useState<any>(null);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [goalCo2, setGoalCo2] = useState(20);
   const [goalCalories, setGoalCalories] = useState(2000);
-  
+
   useEffect(() => {
     setIsLoaded(true);
-    cargarDatos();
   }, []);
-
-  const cargarDatos = async () => {
-    setLoading(true);
-    try {
-      const [dashRes, catRes] = await Promise.all([
-        getDashboard(),
-        getCatalogoAcciones()
-      ]);
-      setDashboard(dashRes);
-      setAcciones(catRes.data || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAction = async (accion_id: number) => {
-    try {
-      const res = await registrarAccion(accion_id);
-      
-      // Actualizar dashboard optimista
-      setDashboard((prev: any) => ({
-        ...prev,
-        impacto_global_co2: prev.impacto_global_co2 + res.transaccion.co2_ganado_kg,
-        impacto_global_calorias: prev.impacto_global_calorias + res.transaccion.calorias_ganadas,
-        xp_total: res.estado_usuario.xp_total,
-        nivel_actual: res.estado_usuario.nivel_actual,
-        racha_dias: res.estado_usuario.racha_dias
-      }));
-
-      // Mostrar recompensa si hay
-      if (res.recompensa_educativa) {
-        setRecompensa(res.recompensa_educativa);
-        setShowReward(true);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error registrando acción");
-    }
-  };
 
   if (loading || !dashboard) {
     return <div className="min-h-screen bg-gradient-to-br from-emerald-950 to-teal-950 flex items-center justify-center text-white">Cargando tu progreso...</div>;

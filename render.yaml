@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: kawsay-backend
+    env: python
+    buildCommand: pip install -r Back_UPS/requirements.txt
+    startCommand: cd Back_UPS && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
