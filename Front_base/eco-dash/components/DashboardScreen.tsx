@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useDashboard } from '../hooks/useDashboard';
 
-import { BookOpen, Flame, Leaf, Wind, Clock, TrendingUp, Target, X, CalendarDays, Sparkles, RefreshCw, Activity, HeartPulse, SlidersHorizontal, Globe } from 'lucide-react';
+import { BookOpen, Flame, Leaf, Wind, Clock, TrendingUp, Target, X, CalendarDays, Sparkles, RefreshCw, Activity, HeartPulse, SlidersHorizontal, Globe, TreePine, Car, Zap } from 'lucide-react';
 import Background from './Background';
 
 type HistoryItem = {
@@ -86,6 +86,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [showCuriositiesModal, setShowCuriositiesModal] = useState(false);
+  const [showImpactModal, setShowImpactModal] = useState(false);
   const [goalCo2, setGoalCo2] = useState(20);
   const [goalCalories, setGoalCalories] = useState(2000);
 
@@ -297,27 +298,23 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
           </div>
 
           <div className="flex flex-col gap-6">
-            <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
-              <h2 className="text-xl font-black text-stone-800 mb-5 flex items-center gap-2">
-                <Activity className="w-6 h-6 text-emerald-600"/> Desglose de Impacto
-              </h2>
-              <div className="h-48 w-full">
-                {desglose_grafico.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie data={desglose_grafico} dataKey="total_co2_kg" nameKey="categoria" cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={5}>
-                        {desglose_grafico.map((entry: any, index: number) => (
-                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-stone-400 font-medium">Sin datos registrados</div>
-                )}
-              </div>
-            </div>
+            <button 
+              onClick={() => setShowImpactModal(true)}
+              className="bg-gradient-to-br from-green-800 to-emerald-950 p-8 rounded-[2rem] border border-green-700/50 shadow-2xl shadow-black/20 text-left hover:scale-105 transition-all group overflow-hidden relative"
+            >
+               <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors"></div>
+               <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-green-500 opacity-20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+               <div className="relative z-10 flex flex-col h-full justify-between gap-4">
+                 <div className="flex items-center justify-between">
+                   <Globe className="w-10 h-10 text-green-400 group-hover:rotate-12 transition-transform duration-500" />
+                   <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
+                 </div>
+                 <div>
+                   <h2 className="text-2xl font-black text-white leading-tight mb-2">Impacto<br/>Ambiental Real</h2>
+                   <p className="text-green-200/80 text-xs font-bold uppercase tracking-widest flex items-center gap-2">Ver equivalencias <span className="group-hover:translate-x-1 transition-transform">&rarr;</span></p>
+                 </div>
+               </div>
+            </button>
 
             
             
@@ -413,6 +410,68 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
           </div>
         </div>
       )}
+
+      
+      {/* MODAL: IMPACTO AMBIENTAL REAL */}
+      {showImpactModal && (
+        <div className="fixed inset-0 bg-emerald-950/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-emerald-950 rounded-[2.5rem] w-full max-w-4xl flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-emerald-800 p-8 overflow-hidden">
+            
+            {/* Background effects */}
+            <div className="absolute -right-20 -top-20 w-72 h-72 bg-emerald-500 opacity-10 rounded-full blur-3xl"></div>
+            
+            <div className="flex justify-between items-start mb-8 relative z-10">
+              <div>
+                <h2 className="text-3xl font-black text-white flex items-center gap-3">
+                  <Activity className="w-8 h-8 text-emerald-400" /> Impacto Ambiental Real
+                </h2>
+                <p className="text-emerald-400 text-xs font-bold mt-2 uppercase tracking-widest">Tu esfuerzo traducido a la naturaleza</p>
+              </div>
+              <button 
+                onClick={() => setShowImpactModal(false)}
+                className="p-3 bg-emerald-800/50 border border-emerald-700/50 rounded-full text-emerald-200 hover:text-white hover:bg-emerald-700 hover:rotate-90 transition-all"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+              
+              {/* Card 1: Arboles */}
+              <div className="bg-emerald-900/40 p-8 rounded-[2rem] border border-emerald-800 flex flex-col items-center text-center shadow-inner">
+                <div className="w-20 h-20 rounded-full bg-emerald-800/80 border border-emerald-600 flex items-center justify-center mb-6 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)]">
+                  <TreePine className="w-10 h-10" />
+                </div>
+                <span className="text-5xl font-black text-white mb-2">{(co2 * 0.4).toFixed(1)}</span>
+                <span className="text-emerald-400 text-xs font-black uppercase tracking-widest mb-4">Árboles Simulados</span>
+                <p className="text-emerald-200/60 text-sm">Lo que un árbol absorbería en un mes.</p>
+              </div>
+
+              {/* Card 2: Auto */}
+              <div className="bg-emerald-900/40 p-8 rounded-[2rem] border border-emerald-800 flex flex-col items-center text-center shadow-inner">
+                <div className="w-20 h-20 rounded-full bg-amber-900/40 border border-amber-600/50 flex items-center justify-center mb-6 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.2)]">
+                  <Car className="w-10 h-10" />
+                </div>
+                <span className="text-5xl font-black text-white mb-2">{(co2 * 8.3).toFixed(1)} <span className="text-2xl">km</span></span>
+                <span className="text-amber-400 text-xs font-black uppercase tracking-widest mb-4">Viaje Evitado</span>
+                <p className="text-emerald-200/60 text-sm">Kilómetros que no se recorrieron en auto.</p>
+              </div>
+
+              {/* Card 3: Energia */}
+              <div className="bg-emerald-900/40 p-8 rounded-[2rem] border border-emerald-800 flex flex-col items-center text-center shadow-inner">
+                <div className="w-20 h-20 rounded-full bg-yellow-900/40 border border-yellow-500/50 flex items-center justify-center mb-6 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]">
+                  <Zap className="w-10 h-10" />
+                </div>
+                <span className="text-5xl font-black text-white mb-2">{Math.round(calories * 1.16)} <span className="text-2xl">Wh</span></span>
+                <span className="text-yellow-400 text-xs font-black uppercase tracking-widest mb-4">Energía Humana</span>
+                <p className="text-emerald-200/60 text-sm">Watts generados por tu movimiento físico.</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* MODAL: AJUSTAR METAS */}
       {showGoalModal && (
