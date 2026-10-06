@@ -68,7 +68,7 @@ const AutumnLeaves = () => {
 export default function DashboardScreen({ onLogout }: { onLogout: () => void }) {
   // Estados iniciales un poquito más bajos para que puedas probar el límite rápido
   
-    const { dashboard, acciones, loading, error, recompensa, showReward, handleAction, closeReward } = useDashboard();
+    const { dashboard, acciones, history, loading, error, recompensa, showReward, handleAction, closeReward } = useDashboard();
   const [isLoaded, setIsLoaded] = useState(false);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showVictoryModal, setShowVictoryModal] = useState(false);
@@ -112,7 +112,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
   const streakData = [
     { id: 1, date: 'Hoy', co2: co2, cal: calories }
   ];
-  const history: any[] = [];
+  
 
 
 

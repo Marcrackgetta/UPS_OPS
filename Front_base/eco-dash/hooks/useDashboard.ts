@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { getDashboard, getCatalogoAcciones, registrarAccion } from '../lib/api';
+import { getDashboard, getCatalogoAcciones, registrarAccion, getHistorialRegistros } from '../lib/api';
 
 export function useDashboard() {
   const [dashboard, setDashboard] = useState<Record<string, any> | null>(null);
   const [acciones, setAcciones] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [recompensa, setRecompensa] = useState<any>(null);
@@ -18,12 +19,14 @@ export function useDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const [dashRes, catRes] = await Promise.all([
+      const [dashRes, catRes, histRes] = await Promise.all([
         getDashboard(),
-        getCatalogoAcciones()
+        getCatalogoAcciones(),
+        getHistorialRegistros()
       ]);
       setDashboard(dashRes);
       setAcciones(catRes.data || []);
+      setHistory(histRes || []);
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Error al cargar los datos');
@@ -70,6 +73,7 @@ export function useDashboard() {
 
   return {
     dashboard,
+    history,
     acciones,
     loading,
     error,
