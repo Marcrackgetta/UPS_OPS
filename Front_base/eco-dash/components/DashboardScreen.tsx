@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useDashboard } from '../hooks/useDashboard';
 
 import { BookOpen, Flame, Leaf, Wind, Clock, TrendingUp, Target, X, CalendarDays, Sparkles, RefreshCw, Activity, HeartPulse, SlidersHorizontal, Globe, TreePine, Car, Zap } from 'lucide-react';
@@ -107,10 +106,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
   const co2Percent = Math.min((co2 / goalCo2) * 100, 100);
   const calPercent = Math.min((calories / goalCalories) * 100, 100);
-  const desglose_grafico = dashboard.desglose_grafico || [];
-  const CHART_COLORS = ['#34d399', '#fcd34d', '#fb923c', '#60a5fa', '#a78bfa'];
-
-  const streakData = [
+      const streakData = [
     { id: 1, date: 'Hoy', co2: co2, cal: calories }
   ];
   
