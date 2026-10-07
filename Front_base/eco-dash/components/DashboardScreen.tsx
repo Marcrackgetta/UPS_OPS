@@ -226,7 +226,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 <div>
                   <div className="flex justify-between items-start mb-6">
                     <div className="bg-gradient-to-br from-green-100 to-green-200 p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
-                      <AnimatedWindIcon className="w-8 h-8 text-green-700" />
+                      <AnimatedWindIcon className="w-5 h-5 md:w-8 md:h-8 text-green-700" />
                     </div>
                     <span className="text-green-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-green-200 shadow-sm">
                       ODS 13
@@ -261,7 +261,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 <div>
                   <div className="flex justify-between items-start mb-6">
                     <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
-                      <AnimatedHeartIcon className="w-8 h-8 text-orange-600" />
+                      <AnimatedHeartIcon className="w-5 h-5 md:w-8 md:h-8 text-orange-600" />
                     </div>
                     <span className="text-orange-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-orange-200 shadow-sm">
                       ODS 3
@@ -380,7 +380,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL: CURIOSIDADES / RECOMPENSA */}
       {(showReward || showCuriositiesModal) && (
         <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-8 rounded-[2rem] shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in zoom-in-95 duration-400 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in zoom-in-95 duration-400 w-full max-w-md max-h-[95vh] overflow-y-auto custom-scrollbar">
             <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
             <div className="absolute -right-4 -top-4 w-32 h-32 bg-yellow-400 opacity-40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
             
@@ -388,20 +388,20 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <X className="w-5 h-5"/>
             </button>
 
-            <div className="flex items-center gap-4 mb-5 relative z-10">
-              <div className="bg-gradient-to-br from-yellow-400 to-amber-500 p-4 rounded-2xl shadow-lg shadow-yellow-500/50 text-white border border-yellow-300 animar-libro group-hover:-rotate-12 transition-transform">
-                <BookOpen className="w-8 h-8 drop-shadow-md" />
+            <div className="flex items-center gap-4 mb-4 md:mb-5 relative z-10">
+              <div className="bg-gradient-to-br from-yellow-400 to-amber-500 p-3 md:p-4 rounded-xl md:rounded-2xl shadow-lg shadow-yellow-500/50 text-white border border-yellow-300 animar-libro group-hover:-rotate-12 transition-transform">
+                <BookOpen className="w-6 h-6 md:w-8 md:h-8 drop-shadow-md" />
               </div>
               <div>
                 <span className="text-yellow-800 font-black text-xs uppercase tracking-widest flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-orange-600 animate-pulse" /> Sabías que...
                 </span>
-                <h3 className="font-black text-stone-800 text-2xl leading-none mt-1 group-hover:text-amber-700 transition-colors">{recompensa?.titulo || 'Semilla de Saber'}</h3>
+                <h3 className="font-black text-stone-800 text-lg md:text-2xl leading-tight md:leading-none mt-1 group-hover:text-amber-700 transition-colors">{recompensa?.titulo || 'Semilla de Saber'}</h3>
               </div>
             </div>
             
-            <div className="relative z-10 bg-white/40 backdrop-blur-md p-5 rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/60 transition-colors">
-              <p className="text-yellow-950 font-bold text-base leading-relaxed">
+            <div className="relative z-10 bg-white/40 backdrop-blur-md p-4 md:p-5 rounded-xl md:rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/60 transition-colors">
+              <p className="text-yellow-950 font-bold text-sm md:text-base leading-snug md:leading-relaxed">
                 {recompensa?.contenido || 'Caminar 30 mins diarios reduce tu huella de carbono a cero y cuida tu corazón. ¡Cada paso es un respiro para el planeta!'}</p>
             </div>
           </div>
@@ -412,12 +412,12 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL: IMPACTO AMBIENTAL REAL */}
       {showImpactModal && (
         <div className="fixed inset-0 bg-emerald-950/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-emerald-950 rounded-[2.5rem] w-full max-w-4xl flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-emerald-800 p-6 md:p-8 overflow-y-auto max-h-[90vh] custom-scrollbar">
+          <div className="bg-emerald-950 rounded-[2.5rem] w-full max-w-4xl flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-emerald-800 p-5 md:p-8 overflow-y-auto max-h-[95vh] custom-scrollbar">
             
             {/* Background effects */}
             <div className="absolute -right-20 -top-20 w-72 h-72 bg-emerald-500 opacity-10 rounded-full blur-3xl"></div>
             
-            <div className="flex justify-between items-start mb-8 relative z-10">
+            <div className="flex justify-between items-start mb-5 md:mb-8 relative z-10">
               <div>
                 <h2 className="text-3xl font-black text-white flex items-center gap-3">
                   <Activity className="w-8 h-8 text-emerald-400" /> Impacto Ambiental Real
@@ -432,36 +432,36 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 relative z-10">
               
               {/* Card 1: Arboles */}
-              <div className="bg-emerald-900/40 p-8 rounded-[2rem] border border-emerald-800 flex flex-col items-center text-center shadow-inner">
-                <div className="w-20 h-20 rounded-full bg-emerald-800/80 border border-emerald-600 flex items-center justify-center mb-6 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)]">
-                  <TreePine className="w-10 h-10" />
+              <div className="bg-emerald-900/40 p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-4 md:gap-0">
+                <div className="w-14 h-14 md:w-20 md:h-20 shrink-0 rounded-full bg-emerald-800/80 border border-emerald-600 flex items-center justify-center mb-0 md:mb-6 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)]">
+                  <TreePine className="w-7 h-7 md:w-10 md:h-10" />
                 </div>
-                <span className="text-5xl font-black text-white mb-2">{(co2 * 0.4).toFixed(1)}</span>
-                <span className="text-emerald-400 text-xs font-black uppercase tracking-widest mb-4">Árboles Simulados</span>
-                <p className="text-emerald-200/60 text-sm">Lo que un árbol absorbería en un mes.</p>
+                <div className="flex flex-col md:items-center w-full"><span className="text-3xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{(co2 * 0.4).toFixed(1)}</span>
+                <span className="text-emerald-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-1 md:mb-4 mt-1 md:mt-0">Árboles Simulados</span>
+                <p className="text-emerald-200/60 text-[10px] md:text-sm leading-tight mt-0 md:mt-0">Lo que un árbol absorbería en un mes.</p></div>
               </div>
 
               {/* Card 2: Auto */}
-              <div className="bg-emerald-900/40 p-8 rounded-[2rem] border border-emerald-800 flex flex-col items-center text-center shadow-inner">
-                <div className="w-20 h-20 rounded-full bg-amber-900/40 border border-amber-600/50 flex items-center justify-center mb-6 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.2)]">
-                  <Car className="w-10 h-10" />
+              <div className="bg-emerald-900/40 p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-4 md:gap-0">
+                <div className="w-14 h-14 md:w-20 md:h-20 shrink-0 rounded-full bg-amber-900/40 border border-amber-600/50 flex items-center justify-center mb-0 md:mb-6 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.2)]">
+                  <Car className="w-7 h-7 md:w-10 md:h-10" />
                 </div>
-                <span className="text-5xl font-black text-white mb-2">{(co2 * 8.3).toFixed(1)} <span className="text-2xl">km</span></span>
-                <span className="text-amber-400 text-xs font-black uppercase tracking-widest mb-4">Viaje Evitado</span>
-                <p className="text-emerald-200/60 text-sm">Kilómetros que no se recorrieron en auto.</p>
+                <div className="flex flex-col md:items-center w-full"><span className="text-3xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{(co2 * 8.3).toFixed(1)} <span className="text-xl md:text-2xl">km</span></span>
+                <span className="text-amber-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-1 md:mb-4 mt-1 md:mt-0">Viaje Evitado</span>
+                <p className="text-emerald-200/60 text-[10px] md:text-sm leading-tight mt-0 md:mt-0">Kilómetros que no se recorrieron en auto.</p></div>
               </div>
 
               {/* Card 3: Energia */}
-              <div className="bg-emerald-900/40 p-8 rounded-[2rem] border border-emerald-800 flex flex-col items-center text-center shadow-inner">
-                <div className="w-20 h-20 rounded-full bg-yellow-900/40 border border-yellow-500/50 flex items-center justify-center mb-6 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]">
-                  <Zap className="w-10 h-10" />
+              <div className="bg-emerald-900/40 p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-4 md:gap-0">
+                <div className="w-14 h-14 md:w-20 md:h-20 shrink-0 rounded-full bg-yellow-900/40 border border-yellow-500/50 flex items-center justify-center mb-0 md:mb-6 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]">
+                  <Zap className="w-7 h-7 md:w-10 md:h-10" />
                 </div>
-                <span className="text-5xl font-black text-white mb-2">{Math.round(calories * 1.16)} <span className="text-2xl">Wh</span></span>
-                <span className="text-yellow-400 text-xs font-black uppercase tracking-widest mb-4">Energía Humana</span>
-                <p className="text-emerald-200/60 text-sm">Watts generados por tu movimiento físico.</p>
+                <div className="flex flex-col md:items-center w-full"><span className="text-3xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{Math.round(calories * 1.16)} <span className="text-xl md:text-2xl">Wh</span></span>
+                <span className="text-yellow-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-1 md:mb-4 mt-1 md:mt-0">Energía Humana</span>
+                <p className="text-emerald-200/60 text-[10px] md:text-sm leading-tight mt-0 md:mt-0">Watts generados por tu movimiento físico.</p></div>
               </div>
 
             </div>
@@ -475,7 +475,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-md flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white max-h-[90vh] overflow-y-auto custom-scrollbar">
             
-            <div className="p-6 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-white">
+            <div className="p-4 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-white">
               <div>
                 <h2 className="text-2xl font-black text-stone-800 flex items-center gap-3">
                   <div className="bg-emerald-100 p-2 rounded-xl text-emerald-600 shadow-inner">
@@ -493,12 +493,12 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               </button>
             </div>
 
-            <div className="p-6 md:p-8 bg-stone-50/50">
-              <div className="flex flex-col gap-8">
+            <div className="p-4 md:p-8 bg-stone-50/50">
+              <div className="flex flex-col gap-4 md:gap-8">
                 
                 {/* Meta de CO2 */}
-                <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
-                  <div className="flex justify-between items-center mb-6">
+                <div className="bg-white/80 backdrop-blur-2xl p-4 md:p-7 rounded-[1.5rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
+                  <div className="flex justify-between items-center mb-4 md:mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <Wind className="w-5 h-5 text-green-600"/> CO2 Evitado
                     </span>
@@ -517,8 +517,8 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 </div>
 
                 {/* Meta de Calorías */}
-                <div className="bg-white/80 backdrop-blur-2xl p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
-                  <div className="flex justify-between items-center mb-6">
+                <div className="bg-white/80 backdrop-blur-2xl p-4 md:p-7 rounded-[1.5rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
+                  <div className="flex justify-between items-center mb-4 md:mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <HeartPulse className="w-5 h-5 text-orange-600"/> Calorías
                     </span>
@@ -553,7 +553,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-lg max-h-[85vh] flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white">
             
-            <div className="p-6 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-white rounded-t-[2.5rem]">
+            <div className="p-4 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-white rounded-t-[2.5rem]">
               <div>
                 <h2 className="text-2xl font-black text-stone-800 flex items-center gap-3">
                   <div className="bg-green-100 p-2 rounded-xl text-green-700 shadow-inner">
@@ -575,7 +575,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               {history.length > 0 ? (
                 <div className="flex flex-col gap-6 relative before:absolute before:inset-y-0 before:left-[15px] before:w-1 before:bg-gradient-to-b before:from-green-300 before:to-orange-300 before:rounded-full">
                   {history.map((item, index) => (
-                    <div key={item.id} className="flex gap-6 relative z-10 group cursor-default">
+                    <div key={item.id} className="flex gap-4 md:gap-6 relative z-10 group cursor-default">
                       <div className={`w-8 h-8 rounded-full border-4 border-white flex-shrink-0 mt-1 shadow-lg transition-transform group-hover:scale-125 ${item.type === 'clima' ? 'bg-gradient-to-br from-green-400 to-emerald-500' : 'bg-gradient-to-br from-orange-400 to-rose-500'}`} />
                       <div className="bg-white w-full p-4 rounded-2xl border border-stone-100 shadow-md group-hover:shadow-xl transition-all group-hover:-translate-y-1">
                         <p className="font-black text-stone-800 text-lg">{item.text}</p>
@@ -603,7 +603,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         <div className="fixed inset-0 bg-orange-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-lg max-h-[85vh] flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white">
             
-            <div className="p-6 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-orange-50/30 rounded-t-[2.5rem]">
+            <div className="p-4 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-orange-50/30 rounded-t-[2.5rem]">
               <div>
                 <h2 className="text-2xl font-black text-stone-800 flex items-center gap-3">
                   <div className="bg-orange-100 p-2 rounded-xl text-orange-600 shadow-inner">
@@ -666,12 +666,12 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             <div className="absolute -left-10 -top-10 w-48 h-48 bg-white opacity-20 rounded-full blur-3xl"></div>
             <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-40 rounded-full blur-3xl"></div>
 
-            <div className="relative z-10 flex justify-center mb-6 gap-4">
-              <div className="bg-white/20 backdrop-blur-md p-5 rounded-full border border-white/50 shadow-2xl animar-latido-planeta">
-                <Globe className="w-10 h-10 text-white" />
+            <div className="relative z-10 flex justify-center mb-4 md:mb-6 gap-3 md:gap-4">
+              <div className="bg-white/20 backdrop-blur-md p-3 md:p-5 rounded-full border border-white/50 shadow-2xl animar-latido-planeta">
+                <Globe className="w-8 h-8 md:w-10 md:h-10 text-white" />
               </div>
-              <div className="bg-white/20 backdrop-blur-md p-5 rounded-full border border-white/50 shadow-2xl animar-latido-planeta" style={{ animationDelay: '0.5s' }}>
-                <HeartPulse className="w-10 h-10 text-white" />
+              <div className="bg-white/20 backdrop-blur-md p-3 md:p-5 rounded-full border border-white/50 shadow-2xl animar-latido-planeta" style={{ animationDelay: '0.5s' }}>
+                <HeartPulse className="w-8 h-8 md:w-10 md:h-10 text-white" />
               </div>
             </div>
 
@@ -684,7 +684,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </span>
             
             <div className="relative z-10 bg-black/20 backdrop-blur-md p-5 rounded-2xl border border-white/20 shadow-inner mb-8">
-              <p className="text-white/95 font-medium text-base leading-relaxed italic drop-shadow-sm">
+              <p className="text-white/95 font-medium text-sm md:text-base leading-snug md:leading-relaxed italic drop-shadow-sm">
                 "El verdadero progreso no se mide por aquello que conquistamos, sino por la vida que logramos preservar. Cada decisión consciente que tomamos hoy, es el aliento de las generaciones del mañana."
               </p>
             </div>
