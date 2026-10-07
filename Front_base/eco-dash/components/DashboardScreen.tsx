@@ -380,7 +380,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL: CURIOSIDADES / RECOMPENSA */}
       {(showReward || showCuriositiesModal) && (
         <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-4 md:p-8 rounded-[1.25rem] md:rounded-[2rem] shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in zoom-in-95 duration-400 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-4 md:p-8 rounded-[1.25rem] md:rounded-[2rem] shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in zoom-in-95 duration-400 w-full max-w-md overflow-hidden">
             <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
             <div className="absolute -right-4 -top-4 w-32 h-32 bg-yellow-400 opacity-40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
             
@@ -412,7 +412,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL: IMPACTO AMBIENTAL REAL */}
       {showImpactModal && (
         <div className="fixed inset-0 bg-emerald-950/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-emerald-950 rounded-[2.5rem] w-full max-w-4xl flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-emerald-800 p-4 md:p-8 overflow-y-auto max-h-[90vh] custom-scrollbar">
+          <div className="bg-emerald-950 rounded-[2.5rem] w-full max-w-4xl flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-emerald-800 p-4 md:p-8 overflow-hidden">
             
             {/* Background effects */}
             <div className="absolute -right-20 -top-20 w-72 h-72 bg-emerald-500 opacity-10 rounded-full blur-3xl"></div>
@@ -473,7 +473,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL: AJUSTAR METAS */}
       {showGoalModal && (
         <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-md flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-md flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white overflow-hidden">
             
             <div className="p-3 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-white">
               <div>
@@ -661,7 +661,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL: VICTORIA TOTAL */}
       {showVictoryModal && (
         <div className="fixed inset-0 z-[100] bg-emerald-950/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-in fade-in duration-500">
-          <div className="relative w-full max-w-lg p-6 md:p-10 rounded-[3rem] max-h-[90vh] overflow-y-auto custom-scrollbar shadow-[0_0_100px_rgba(234,179,8,0.5)] border-2 text-center animate-in zoom-in-95 duration-500 bg-gradient-to-br from-emerald-600 via-green-500 to-orange-500 border-yellow-300">
+          <div className="relative w-full max-w-lg p-6 md:p-10 rounded-[3rem] overflow-hidden shadow-[0_0_100px_rgba(234,179,8,0.5)] border-2 text-center animate-in zoom-in-95 duration-500 bg-gradient-to-br from-emerald-600 via-green-500 to-orange-500 border-yellow-300">
             <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
             <div className="absolute -left-10 -top-10 w-48 h-48 bg-white opacity-20 rounded-full blur-3xl"></div>
             <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-40 rounded-full blur-3xl"></div>
