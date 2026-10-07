@@ -165,10 +165,10 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-row justify-center sm:justify-start flex-wrap items-center gap-2 md:gap-3 w-full md:w-auto">
             <button 
               onClick={() => setShowGoalModal(true)}
-              className="group flex items-center gap-2 bg-white/10 backdrop-blur-xl px-5 py-3 rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:border-emerald-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-white font-bold text-sm w-full sm:w-auto justify-center"
+              className="group flex items-center gap-2 bg-white/10 backdrop-blur-xl px-5 py-3 rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:border-emerald-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-white font-bold text-sm w-auto justify-center"
             >
               <SlidersHorizontal className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500 text-emerald-300" />
               Ajustar Metas
@@ -176,7 +176,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
             <button 
               onClick={() => setShowStreakModal(true)}
-              className="group flex items-center gap-3 bg-white/10 backdrop-blur-xl px-6 py-3 rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:shadow-[0_8px_30px_rgba(251,146,60,0.4)] hover:border-orange-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer w-full sm:w-auto justify-center"
+              className="group flex items-center gap-3 bg-white/10 backdrop-blur-xl px-6 py-3 rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:shadow-[0_8px_30px_rgba(251,146,60,0.4)] hover:border-orange-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer w-auto justify-center"
             >
               <div className="bg-gradient-to-tr from-orange-400 to-yellow-400 p-2 rounded-full shadow-[0_0_15px_rgba(251,146,60,0.5)] text-white group-hover:scale-110 transition-transform">
                 <Flame className="w-5 h-5 animate-bounce" />
@@ -190,7 +190,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               className="group flex items-center gap-2 bg-rose-500/20 backdrop-blur-xl px-5 py-3 rounded-full border border-rose-500/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-rose-500 hover:border-rose-400 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-rose-100 hover:text-white font-bold text-sm justify-center"
             >
               <RefreshCw className="w-4 h-4 group-hover:-rotate-180 transition-transform duration-500" />
-              <span>Cerrar Sesión</span>
+              <span className="hidden md:inline">Cerrar Sesión</span>
             </button>
 
           </div>
@@ -379,8 +379,8 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       
       {/* MODAL: CURIOSIDADES / RECOMPENSA */}
       {(showReward || showCuriositiesModal) && (
-        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 border-2 border-yellow-400 p-4 md:p-8 rounded-[1.25rem] md:rounded-[2rem] shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in zoom-in-95 duration-400 w-full max-w-md overflow-hidden">
+        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
+          <div className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 p-6 md:p-8 rounded-t-[2.5rem] rounded-b-none md:rounded-b-[2.5rem] shadow-[0_-10px_60px_rgba(253,224,71,0.5)] md:shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in slide-in-from-bottom-full md:zoom-in-95 duration-400 w-full max-w-md overflow-hidden border-t-2 md:border-2 border-yellow-400">
             <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
             <div className="absolute -right-4 -top-4 w-32 h-32 bg-yellow-400 opacity-40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
             
@@ -411,8 +411,8 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       
       {/* MODAL: IMPACTO AMBIENTAL REAL */}
       {showImpactModal && (
-        <div className="fixed inset-0 bg-emerald-950/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-emerald-950 rounded-[2.5rem] w-full max-w-4xl flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-emerald-800 p-4 md:p-8 overflow-hidden">
+        <div className="fixed inset-0 bg-emerald-950/90 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
+          <div className="bg-emerald-950 rounded-t-[2.5rem] rounded-b-none md:rounded-b-[2.5rem] w-full max-w-4xl flex flex-col shadow-[0_-10px_60px_rgba(0,0,0,0.5)] md:shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in slide-in-from-bottom-full md:zoom-in-95 duration-400 border-t md:border border-emerald-800 p-6 md:p-8 overflow-hidden">
             
             {/* Background effects */}
             <div className="absolute -right-20 -top-20 w-72 h-72 bg-emerald-500 opacity-10 rounded-full blur-3xl"></div>
@@ -472,8 +472,8 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
       {/* MODAL: AJUSTAR METAS */}
       {showGoalModal && (
-        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-md flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white overflow-hidden">
+        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
+          <div className="bg-white/95 backdrop-blur-xl rounded-t-[2.5rem] rounded-b-none md:rounded-b-[2.5rem] w-full max-w-md flex flex-col shadow-[0_-10px_60px_rgba(0,0,0,0.3)] md:shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in slide-in-from-bottom-full md:zoom-in-95 duration-400 border-t md:border border-white overflow-hidden">
             
             <div className="p-3 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-white">
               <div>
@@ -497,7 +497,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <div className="flex flex-col gap-2 md:gap-8">
                 
                 {/* Meta de CO2 */}
-                <div className="bg-white/80 backdrop-blur-2xl p-2 md:p-7 rounded-[1rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
+                <div className="bg-transparent md:bg-white/80 md:backdrop-blur-2xl p-0 md:p-7 rounded-none md:rounded-[2rem] border-0 md:border md:border-white/60 shadow-none md:shadow-2xl md:shadow-black/20">
                   <div className="flex justify-between items-center mb-3 md:mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <Wind className="w-5 h-5 text-green-600"/> CO2 Evitado
@@ -517,7 +517,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 </div>
 
                 {/* Meta de Calorías */}
-                <div className="bg-white/80 backdrop-blur-2xl p-2 md:p-7 rounded-[1rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
+                <div className="bg-transparent md:bg-white/80 md:backdrop-blur-2xl p-0 md:p-7 rounded-none md:rounded-[2rem] border-0 md:border md:border-white/60 shadow-none md:shadow-2xl md:shadow-black/20">
                   <div className="flex justify-between items-center mb-3 md:mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <HeartPulse className="w-5 h-5 text-orange-600"/> Calorías
@@ -550,7 +550,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
       {/* MODAL: HISTORIAL DE ACCIONES */}
       {showHistoryModal && (
-        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
           <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-lg max-h-[85vh] flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white">
             
             <div className="p-3 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-white rounded-t-[2.5rem]">
@@ -600,7 +600,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
       {/* MODAL: RACHAS */}
       {showStreakModal && (
-        <div className="fixed inset-0 bg-orange-950/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+        <div className="fixed inset-0 bg-orange-950/80 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
           <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] w-full max-w-lg max-h-[85vh] flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in zoom-in-95 duration-400 border border-white">
             
             <div className="p-3 md:p-8 border-b border-stone-100 flex justify-between items-center bg-gradient-to-r from-stone-50 to-orange-50/30 rounded-t-[2.5rem]">
@@ -660,8 +660,8 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
       {/* MODAL: VICTORIA TOTAL */}
       {showVictoryModal && (
-        <div className="fixed inset-0 z-[100] bg-emerald-950/90 backdrop-blur-2xl flex items-center justify-center p-4 animate-in fade-in duration-500">
-          <div className="relative w-full max-w-lg p-6 md:p-10 rounded-[3rem] overflow-hidden shadow-[0_0_100px_rgba(234,179,8,0.5)] border-2 text-center animate-in zoom-in-95 duration-500 bg-gradient-to-br from-emerald-600 via-green-500 to-orange-500 border-yellow-300">
+        <div className="fixed inset-0 z-[100] bg-emerald-950/90 backdrop-blur-2xl flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-500">
+          <div className="relative w-full max-w-lg p-8 md:p-10 rounded-t-[3rem] rounded-b-none md:rounded-b-[3rem] overflow-hidden shadow-[0_-10px_100px_rgba(234,179,8,0.5)] border-t-2 md:border-2 text-center animate-in slide-in-from-bottom-full md:zoom-in-95 duration-500 bg-gradient-to-br from-emerald-600 via-green-500 to-orange-500 border-yellow-300">
             <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0"></div>
             <div className="absolute -left-10 -top-10 w-48 h-48 bg-white opacity-20 rounded-full blur-3xl"></div>
             <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-40 rounded-full blur-3xl"></div>
