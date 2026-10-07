@@ -400,14 +400,13 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 <span className="text-yellow-800 font-black text-xs uppercase tracking-widest flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-orange-600 animate-pulse" /> Sabías que...
                 </span>
-                <h3 className="font-black text-stone-800 text-2xl leading-none mt-1 group-hover:text-amber-700 transition-colors">Curiosidad ODS 4</h3>
+                <h3 className="font-black text-stone-800 text-2xl leading-none mt-1 group-hover:text-amber-700 transition-colors">{recompensa?.titulo || 'Semilla de Saber'}</h3>
               </div>
             </div>
             
             <div className="relative z-10 bg-white/40 backdrop-blur-md p-5 rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/60 transition-colors">
               <p className="text-yellow-950 font-bold text-base leading-relaxed">
-                Caminar 30 mins diarios reduce tu huella de carbono a cero y cuida tu corazón. ¡Cada paso es un respiro para el planeta!
-              </p>
+                {recompensa?.contenido || 'Caminar 30 mins diarios reduce tu huella de carbono a cero y cuida tu corazón. ¡Cada paso es un respiro para el planeta!'}</p>
             </div>
           </div>
         </div>

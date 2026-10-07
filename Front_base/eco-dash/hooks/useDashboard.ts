@@ -55,7 +55,7 @@ export function useDashboard() {
       // Mostrar recompensa si hay
       if (res.recompensa_educativa) {
         setRecompensa(res.recompensa_educativa);
-        setShowReward(true);
+        // setShowReward(true); // Desactivado para no ser intrusivo
       }
       
       return res;
