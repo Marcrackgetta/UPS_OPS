@@ -388,7 +388,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <X className="w-5 h-5"/>
             </button>
 
-            <div className="flex items-center gap-4 mb-4 md:mb-5 relative z-10">
+            <div className="flex items-center gap-4 mb-2 md:mb-5 relative z-10">
               <div className="bg-gradient-to-br from-yellow-400 to-amber-500 p-3 md:p-4 rounded-xl md:rounded-2xl shadow-lg shadow-yellow-500/50 text-white border border-yellow-300 animar-libro group-hover:-rotate-12 transition-transform">
                 <BookOpen className="w-6 h-6 md:w-8 md:h-8 drop-shadow-md" />
               </div>
@@ -400,7 +400,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               </div>
             </div>
             
-            <div className="relative z-10 bg-white/40 backdrop-blur-md p-4 md:p-5 rounded-xl md:rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/60 transition-colors">
+            <div className="relative z-10 bg-white/40 backdrop-blur-md p-2 md:p-5 rounded-xl md:rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/60 transition-colors">
               <p className="text-yellow-950 font-bold text-sm md:text-base leading-snug md:leading-relaxed">
                 {recompensa?.contenido || 'Caminar 30 mins diarios reduce tu huella de carbono a cero y cuida tu corazón. ¡Cada paso es un respiro para el planeta!'}</p>
             </div>
@@ -432,34 +432,34 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-6 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-1 md:gap-6 relative z-10">
               
               {/* Card 1: Arboles */}
-              <div className="bg-emerald-900/40 p-3 md:p-8 rounded-[1.25rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-3 md:gap-0">
-                <div className="w-10 h-10 md:w-20 md:h-20 shrink-0 rounded-full bg-emerald-800/80 border border-emerald-600 flex items-center justify-center mb-0 md:mb-6 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)]">
-                  <TreePine className="w-5 h-5 md:w-10 md:h-10" />
+              <div className="bg-emerald-900/40 p-2 md:p-8 rounded-[1.25rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-3 md:gap-0">
+                <div className="w-8 h-8 md:w-20 md:h-20 shrink-0 rounded-full bg-emerald-800/80 border border-emerald-600 flex items-center justify-center mb-0 md:mb-6 text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.3)]">
+                  <TreePine className="w-4 h-4 md:w-10 md:h-10" />
                 </div>
-                <div className="flex flex-col md:items-center w-full"><span className="text-2xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{(co2 * 0.4).toFixed(1)}</span>
+                <div className="flex flex-col md:items-center w-full"><span className="text-xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{(co2 * 0.4).toFixed(1)}</span>
                 <span className="text-emerald-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-1 md:mb-4 mt-1 md:mt-0">Árboles Simulados</span>
                 <p className="text-emerald-200/60 hidden md:block text-sm leading-tight">Lo que un árbol absorbería en un mes.</p></div>
               </div>
 
               {/* Card 2: Auto */}
-              <div className="bg-emerald-900/40 p-3 md:p-8 rounded-[1.25rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-3 md:gap-0">
-                <div className="w-10 h-10 md:w-20 md:h-20 shrink-0 rounded-full bg-amber-900/40 border border-amber-600/50 flex items-center justify-center mb-0 md:mb-6 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.2)]">
-                  <Car className="w-5 h-5 md:w-10 md:h-10" />
+              <div className="bg-emerald-900/40 p-2 md:p-8 rounded-[1.25rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-3 md:gap-0">
+                <div className="w-8 h-8 md:w-20 md:h-20 shrink-0 rounded-full bg-amber-900/40 border border-amber-600/50 flex items-center justify-center mb-0 md:mb-6 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.2)]">
+                  <Car className="w-4 h-4 md:w-10 md:h-10" />
                 </div>
-                <div className="flex flex-col md:items-center w-full"><span className="text-2xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{(co2 * 8.3).toFixed(1)} <span className="text-xl md:text-2xl">km</span></span>
+                <div className="flex flex-col md:items-center w-full"><span className="text-xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{(co2 * 8.3).toFixed(1)} <span className="text-xl md:text-2xl">km</span></span>
                 <span className="text-amber-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-1 md:mb-4 mt-1 md:mt-0">Viaje Evitado</span>
                 <p className="text-emerald-200/60 hidden md:block text-sm leading-tight">Kilómetros que no se recorrieron en auto.</p></div>
               </div>
 
               {/* Card 3: Energia */}
-              <div className="bg-emerald-900/40 p-3 md:p-8 rounded-[1.25rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-3 md:gap-0">
-                <div className="w-10 h-10 md:w-20 md:h-20 shrink-0 rounded-full bg-yellow-900/40 border border-yellow-500/50 flex items-center justify-center mb-0 md:mb-6 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]">
-                  <Zap className="w-5 h-5 md:w-10 md:h-10" />
+              <div className="bg-emerald-900/40 p-2 md:p-8 rounded-[1.25rem] md:rounded-[2rem] border border-emerald-800 flex flex-row md:flex-col items-center text-left md:text-center shadow-inner gap-3 md:gap-0">
+                <div className="w-8 h-8 md:w-20 md:h-20 shrink-0 rounded-full bg-yellow-900/40 border border-yellow-500/50 flex items-center justify-center mb-0 md:mb-6 text-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.2)]">
+                  <Zap className="w-4 h-4 md:w-10 md:h-10" />
                 </div>
-                <div className="flex flex-col md:items-center w-full"><span className="text-2xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{Math.round(calories * 1.16)} <span className="text-xl md:text-2xl">Wh</span></span>
+                <div className="flex flex-col md:items-center w-full"><span className="text-xl md:text-5xl font-black text-white mb-0 md:mb-2 leading-none">{Math.round(calories * 1.16)} <span className="text-xl md:text-2xl">Wh</span></span>
                 <span className="text-yellow-400 text-[10px] md:text-xs font-black uppercase tracking-widest mb-1 md:mb-4 mt-1 md:mt-0">Energía Humana</span>
                 <p className="text-emerald-200/60 hidden md:block text-sm leading-tight">Watts generados por tu movimiento físico.</p></div>
               </div>
@@ -483,7 +483,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                   </div>
                   Tus Metas
                 </h2>
-                <p className="text-stone-500 text-sm font-bold mt-2 uppercase tracking-wider">Define tus propios límites</p>
+                <p className="hidden md:block text-stone-500 text-sm font-bold mt-2 uppercase tracking-wider">Define tus propios límites</p>
               </div>
               <button 
                 onClick={() => setShowGoalModal(false)}
@@ -493,11 +493,11 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               </button>
             </div>
 
-            <div className="p-3 md:p-8 bg-stone-50/50">
-              <div className="flex flex-col gap-3 md:gap-8">
+            <div className="p-2 md:p-8 bg-stone-50/50">
+              <div className="flex flex-col gap-2 md:gap-8">
                 
                 {/* Meta de CO2 */}
-                <div className="bg-white/80 backdrop-blur-2xl p-3 md:p-7 rounded-[1rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
+                <div className="bg-white/80 backdrop-blur-2xl p-2 md:p-7 rounded-[1rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
                   <div className="flex justify-between items-center mb-3 md:mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <Wind className="w-5 h-5 text-green-600"/> CO2 Evitado
@@ -517,7 +517,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 </div>
 
                 {/* Meta de Calorías */}
-                <div className="bg-white/80 backdrop-blur-2xl p-3 md:p-7 rounded-[1rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
+                <div className="bg-white/80 backdrop-blur-2xl p-2 md:p-7 rounded-[1rem] md:rounded-[2rem] border border-white/60 shadow-xl shadow-black/10 md:shadow-2xl md:shadow-black/20">
                   <div className="flex justify-between items-center mb-3 md:mb-6">
                     <span className="font-black text-stone-700 flex items-center gap-2">
                       <HeartPulse className="w-5 h-5 text-orange-600"/> Calorías
@@ -538,7 +538,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 
                 <button 
                   onClick={() => setShowGoalModal(false)} 
-                  className="w-full bg-stone-800 hover:bg-stone-900 text-white font-black uppercase tracking-widest text-sm py-4 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-stone-800 hover:bg-stone-900 text-white font-black uppercase tracking-widest text-sm py-2 md:py-4 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
                   <Target className="w-5 h-5" /> Guardar Mis Metas
                 </button>
@@ -575,7 +575,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               {history.length > 0 ? (
                 <div className="flex flex-col gap-6 relative before:absolute before:inset-y-0 before:left-[15px] before:w-1 before:bg-gradient-to-b before:from-green-300 before:to-orange-300 before:rounded-full">
                   {history.map((item, index) => (
-                    <div key={item.id} className="flex gap-2 md:gap-6 relative z-10 group cursor-default">
+                    <div key={item.id} className="flex gap-1 md:gap-6 relative z-10 group cursor-default">
                       <div className={`w-8 h-8 rounded-full border-4 border-white flex-shrink-0 mt-1 shadow-lg transition-transform group-hover:scale-125 ${item.type === 'clima' ? 'bg-gradient-to-br from-green-400 to-emerald-500' : 'bg-gradient-to-br from-orange-400 to-rose-500'}`} />
                       <div className="bg-white w-full p-4 rounded-2xl border border-stone-100 shadow-md group-hover:shadow-xl transition-all group-hover:-translate-y-1">
                         <p className="font-black text-stone-800 text-lg">{item.text}</p>
@@ -679,11 +679,11 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               ¡DÍA SUPERADO!
             </h2>
             
-            <span className="relative z-10 inline-block bg-white/20 text-white font-bold px-4 py-1.5 rounded-full text-sm uppercase tracking-widest mb-6 border border-white/30 backdrop-blur-sm shadow-inner">
+            <span className="relative z-10 inline-block bg-white/20 text-white font-bold px-4 py-1.5 rounded-full text-sm uppercase tracking-widest mb-3 md:mb-6 border border-white/30 backdrop-blur-sm shadow-inner">
               Has alcanzado tus metas de hoy y tu huella verde es un ejemplo para todos.
             </span>
             
-            <div className="relative z-10 bg-black/20 backdrop-blur-md p-5 rounded-2xl border border-white/20 shadow-inner mb-8">
+            <div className="hidden md:block relative z-10 bg-black/20 backdrop-blur-md p-5 rounded-2xl border border-white/20 shadow-inner mb-8">
               <p className="text-white/95 font-medium text-sm md:text-base leading-snug md:leading-relaxed italic drop-shadow-sm">
                 "El verdadero progreso no se mide por aquello que conquistamos, sino por la vida que logramos preservar. Cada decisión consciente que tomamos hoy, es el aliento de las generaciones del mañana."
               </p>
@@ -691,7 +691,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
             <button 
               onClick={() => setShowVictoryModal(false)}
-              className="relative z-10 w-full bg-white text-stone-900 hover:bg-stone-100 font-black uppercase tracking-widest text-sm py-4 rounded-2xl shadow-xl hover:shadow-[0_10px_30px_rgba(255,255,255,0.4)] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-2"
+              className="relative z-10 w-full bg-white text-stone-900 hover:bg-stone-100 font-black uppercase tracking-widest text-sm py-2 md:py-4 rounded-2xl shadow-xl hover:shadow-[0_10px_30px_rgba(255,255,255,0.4)] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-2"
             >
               <Sparkles className="w-5 h-5 text-yellow-500" /> ¡Continuar!
             </button>
