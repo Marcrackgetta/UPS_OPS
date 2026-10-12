@@ -6,7 +6,7 @@ from supabase import create_client, Client
 load_dotenv("Back_UPS/.env")
 
 url = os.environ.get("SUPABASE_URL")
-key_anon = os.environ.get("SUPABASE_KEY_PUBLI")
+key_anon = os.environ.get("SUPABASE_KEY_PUBLIC") or os.environ.get("SUPABASE_KEY_PUBLI")
 key_service = os.environ.get("SUPABASE_KEY")
 
 def run_tests():

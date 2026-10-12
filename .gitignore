@@ -1,7 +1,10 @@
-# Environments
+# Environments & Secrets
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.crt
 
 # Python
 __pycache__/
@@ -11,18 +14,43 @@ __pycache__/
 venv/
 env/
 .pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
 
-# Node / Next.js
+# Node / Next.js / TypeScript
 node_modules/
 .next/
 out/
 build/
+dist/
 .swc/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.pnpm-debug.log*
 
-# OS
+# OS & IDEs
 .DS_Store
 Thumbs.db
+Desktop.ini
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Archivos multimedia, documentos y scripts auxiliares excluidos del repositorio
+*.mp4
+*.mov
+*.avi
+*.doc
+*.docx
+/clean_imports.py
+/docs/docx_texts.txt
+/docs/generate_doc.py
+/db/tests/test_cols.py

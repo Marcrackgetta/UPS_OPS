@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
 import LoginScreen from '../components/LoginScreen';
 import DashboardScreen from '../components/DashboardScreen';
 
 export default function AppWrapper() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
