@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kawsay Eco-Dash | ODS 3, 4 y 13",
+  title: "Kawsay Eco-Dash",
   description:
     "Plataforma web interactiva de monitoreo ambiental y bienestar estudiantil alineada a los ODS 3, 4 y 13 — Concurso Intercolegial Multimedia Teens 2026 (UPS).",
 };
