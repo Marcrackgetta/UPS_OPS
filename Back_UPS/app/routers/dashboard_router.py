@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 from fastapi import APIRouter, HTTPException, Depends
 from app.core.database import supabase
 from app.core.security import get_current_user
@@ -225,5 +225,5 @@ def obtener_resumen_dashboard(current_user = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail=str(e))
     except HTTPException:
         raise
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=500, detail="Error interno al generar el dashboard.")

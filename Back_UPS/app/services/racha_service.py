@@ -1,6 +1,5 @@
-import math
 from datetime import date, datetime, timezone, timedelta
-from typing import Tuple, Optional, Any
+from typing import Optional, Any
 
 try:
     from zoneinfo import ZoneInfo
@@ -31,43 +30,6 @@ def _parse_fecha(valor: Optional[date | str]) -> Optional[date]:
             return None
         return date.fromisoformat(texto[:10])
     return None
-
-def calcular_nuevo_nivel(xp_total: int, nivel_actual: int) -> Tuple[int, bool]:
-    """
-    Calcula si la XP acumulada supera el umbral del nivel actual.
-    Fórmula de progresión: XP_Requerida = 100 * (Nivel ^ 1.5)
-    """
-    # Se calcula la XP necesaria para alcanzar el SIGUIENTE nivel
-    xp_necesaria_siguiente = int(100 * math.pow(nivel_actual, 1.5))
-    
-    if xp_total >= xp_necesaria_siguiente:
-        return nivel_actual + 1, True # Sube de nivel
-    
-    return nivel_actual, False # Se mantiene en el mismo nivel
-
-def procesar_racha_diaria(fecha_ultimo_registro: date, fecha_actual: date, racha_actual: int) -> int:
-    """
-    Maneja la máquina de estados de los días consecutivos al registrar una acción.
-    Evita inflación fraudulenta de rachas en un mismo día.
-    """
-    fecha_ult = _parse_fecha(fecha_ultimo_registro)
-    fecha_act = _parse_fecha(fecha_actual) or obtener_fecha_actual_guayaquil()
-
-    if not fecha_ult:
-        # Es el primer registro en la historia del usuario
-        return 1
-
-    diferencia_dias = (fecha_act - fecha_ult).days
-
-    if diferencia_dias <= 0:
-        # Ya registró algo hoy (o marca futura por desfase). La racha se mantiene intacta, no suma.
-        return max(racha_actual, 1)
-    elif diferencia_dias == 1:
-        # Registró ayer y volvió a registrar hoy. La racha sube.
-        return racha_actual + 1
-    else:
-        # Dejó de registrar más de un día. La racha se rompe y reinicia en 1 por el registro de hoy.
-        return 1
 
 def calcular_racha_vigente(
     fecha_ultimo_registro: Optional[date | str],

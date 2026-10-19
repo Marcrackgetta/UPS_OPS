@@ -1,15 +1,23 @@
 "use client";
-import React, { createContext, useContext, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 
 interface AudioContextType {
   playInteractionSound: () => void;
+  isMuted: boolean;
+  toggleMute: () => void;
 }
 
-const AudioContext = createContext<AudioContextType>({ playInteractionSound: () => {} });
+const AudioContext = createContext<AudioContextType>({
+  playInteractionSound: () => {},
+  isMuted: false,
+  toggleMute: () => {},
+});
 
 export const useAudio = () => useContext(AudioContext);
 
 export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const isMutedRef = useRef<boolean>(false);
   const musicAudioRef = useRef<HTMLAudioElement | null>(null);
   const sfxAudioRef = useRef<HTMLAudioElement | null>(null);
   const currentSongIndex = useRef<number>(0);
@@ -21,12 +29,32 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     '/Media/Musica4.ogg'
   ]);
 
-  const playInteractionSound = () => {
+  const playInteractionSound = useCallback(() => {
+    if (isMutedRef.current) return;
     if (sfxAudioRef.current) {
       sfxAudioRef.current.currentTime = 0;
       sfxAudioRef.current.play().catch(e => console.warn("Audio play blocked", e));
     }
-  };
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => {
+      const next = !prev;
+      isMutedRef.current = next;
+      if (musicAudioRef.current) {
+        musicAudioRef.current.muted = next;
+        if (next) {
+          musicAudioRef.current.pause();
+        } else if (hasInteracted.current) {
+          musicAudioRef.current.play().catch(e => console.warn("Music resume blocked", e));
+        }
+      }
+      if (sfxAudioRef.current) {
+        sfxAudioRef.current.muted = next;
+      }
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -34,9 +62,11 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Inicializar audios
     musicAudioRef.current = new Audio();
     musicAudioRef.current.volume = 0.15; // Fondo
+    musicAudioRef.current.muted = isMutedRef.current;
     
     sfxAudioRef.current = new Audio('/Media/sonido.ogg');
     sfxAudioRef.current.volume = 0.5; // Efecto
+    sfxAudioRef.current.muted = isMutedRef.current;
 
     // Aleatorizar la canción inicial
     currentSongIndex.current = Math.floor(Math.random() * songs.current.length);
@@ -46,7 +76,9 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       currentSongIndex.current = (currentSongIndex.current + 1) % songs.current.length;
       if (musicAudioRef.current) {
         musicAudioRef.current.src = songs.current[currentSongIndex.current];
-        musicAudioRef.current.play().catch(e => console.warn("Music next song blocked", e));
+        if (!isMutedRef.current) {
+          musicAudioRef.current.play().catch(e => console.warn("Music next song blocked", e));
+        }
       }
     };
 
@@ -56,7 +88,7 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const startMusic = () => {
       if (!hasInteracted.current) {
         hasInteracted.current = true;
-        if (musicAudioRef.current) {
+        if (musicAudioRef.current && !isMutedRef.current) {
           musicAudioRef.current.play().catch(e => console.warn("Music play blocked", e));
         }
       }
@@ -96,10 +128,10 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       document.removeEventListener('keydown', startMusic);
       document.removeEventListener('click', handleGlobalClick);
     };
-  }, []);
+  }, [playInteractionSound]);
 
   return (
-    <AudioContext.Provider value={{ playInteractionSound }}>
+    <AudioContext.Provider value={{ playInteractionSound, isMuted, toggleMute }}>
       {children}
     </AudioContext.Provider>
   );

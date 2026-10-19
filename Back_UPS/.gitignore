@@ -4,8 +4,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 .env
+.env.local
 .env.*
 !.env.example
 .pytest_cache/
 .coverage
 htmlcov/
+*.log

@@ -1,10 +1,27 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { Leaf, LogIn, UserPlus, Loader2, Mail, Lock, User } from 'lucide-react';
+import {
+  Leaf,
+  LogIn,
+  UserPlus,
+  Loader2,
+  Mail,
+  Lock,
+  User,
+  Volume2,
+  VolumeX,
+  Info,
+  X,
+  Users,
+  GraduationCap,
+  Sparkles,
+} from 'lucide-react';
 import Background from './Background';
+import { useAudio } from './AudioProvider';
 
 export default function LoginScreen() {
+  const { isMuted, toggleMute } = useAudio();
   const [nombre, setNombre] = useState('');
   const [apellido, setApellido] = useState('');
   const [email, setEmail] = useState('');
@@ -14,6 +31,18 @@ export default function LoginScreen() {
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showCreditsModal, setShowCreditsModal] = useState(false);
+
+  useEffect(() => {
+    if (!showCreditsModal) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowCreditsModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showCreditsModal]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,8 +127,30 @@ export default function LoginScreen() {
   return (
     <div className="min-h-[100dvh] bg-gradient-to-br from-emerald-950 via-green-900 to-teal-950 text-stone-800 font-sans selection:bg-green-500 selection:text-white overflow-x-hidden overflow-y-auto relative flex flex-col">
       <Background />
+
+      {/* CABECERA DE CONTROL DE AUDIO */}
+      <header className="relative z-20 w-full max-w-6xl mx-auto px-4 pt-4 sm:px-6 sm:pt-6 flex items-center justify-between">
+        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-xl px-3.5 py-1.5 rounded-full border border-white/15 text-emerald-100 text-xs font-bold tracking-wider uppercase">
+          <Leaf className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+          <span>ODS 3 • ODS 4 • ODS 13</span>
+        </div>
+        <button
+          type="button"
+          onClick={toggleMute}
+          aria-label={isMuted ? 'Activar sonido' : 'Silenciar sonido'}
+          title={isMuted ? 'Activar sonido' : 'Silenciar sonido'}
+          className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-3.5 py-2 min-h-[44px] rounded-full border border-white/20 shadow-lg hover:bg-white/20 hover:border-emerald-300/50 transition-all text-white font-bold text-xs cursor-pointer"
+        >
+          {isMuted ? (
+            <VolumeX className="w-4 h-4 text-rose-300 shrink-0" />
+          ) : (
+            <Volume2 className="w-4 h-4 text-emerald-300 shrink-0" />
+          )}
+          <span className="hidden sm:inline">{isMuted ? 'Sonido Off' : 'Sonido On'}</span>
+        </button>
+      </header>
       
-      <div className={`relative z-20 flex-1 flex items-center justify-center px-3.5 py-6 sm:p-6 transition-all duration-700 ${isTransitioning ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
+      <div className={`relative z-20 flex-1 flex items-center justify-center px-3.5 py-4 sm:p-6 transition-all duration-700 ${isTransitioning ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}>
         
         <div className="w-full max-w-md bg-white/10 backdrop-blur-2xl p-5 sm:p-8 md:p-10 rounded-[1.75rem] sm:rounded-[3rem] border border-white/20 shadow-[0_30px_60px_rgba(0,0,0,0.4)] text-center relative overflow-hidden animate-in zoom-in-95 duration-700">
           
@@ -130,6 +181,7 @@ export default function LoginScreen() {
                     <input
                       type="text"
                       name="nombre"
+                      aria-label="Nombre"
                       autoComplete="given-name"
                       placeholder="Nombre"
                       required={isRegistering}
@@ -146,6 +198,7 @@ export default function LoginScreen() {
                     <input
                       type="text"
                       name="apellido"
+                      aria-label="Apellido"
                       autoComplete="family-name"
                       placeholder="Apellido"
                       required={isRegistering}
@@ -164,6 +217,7 @@ export default function LoginScreen() {
                 <input 
                   type="email" 
                   name="email"
+                  aria-label="Correo electrónico"
                   autoComplete="email"
                   placeholder="Correo electrónico" 
                   required
@@ -180,6 +234,7 @@ export default function LoginScreen() {
                 <input 
                   type="password" 
                   name="password"
+                  aria-label="Contraseña"
                   autoComplete={isRegistering ? 'new-password' : 'current-password'}
                   placeholder="Contraseña" 
                   required
@@ -228,6 +283,102 @@ export default function LoginScreen() {
           </div>
         </div>
       </div>
+
+      {/* PIE DE PÁGINA: CRÉDITOS Y TRANSPARENCIA IA */}
+      <footer className="relative z-20 w-full max-w-5xl mx-auto px-4 pb-5 pt-2 text-center text-emerald-100/80 text-xs">
+        <div className="bg-white/10 backdrop-blur-xl border border-white/15 rounded-2xl px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-2 shadow-lg">
+          <div className="text-left">
+            <p className="font-bold text-white">
+              Academia Naval Almirante Illingworth • Concurso Intercolegial &ldquo;Multimedia Teens 2026&rdquo; (UPS)
+            </p>
+            <p className="text-[11px] text-emerald-200/80">
+              Equipo: Joel Jordán Maridueña, Melissa Nieto Martillo, Francisco Narváez Durán, Marcelo Zambrano Aguirre • Tutor: Ing. Joel Anthony Torres Urresto
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowCreditsModal(true)}
+            className="min-h-[38px] px-3.5 py-1.5 rounded-xl bg-emerald-500/25 hover:bg-emerald-500/40 border border-emerald-300/30 text-emerald-100 font-bold text-xs inline-flex items-center gap-1.5 shrink-0 transition-all cursor-pointer"
+          >
+            <Info className="w-4 h-4 text-emerald-300 shrink-0" />
+            <span>Créditos e IA</span>
+          </button>
+        </div>
+      </footer>
+
+      {/* MODAL DE CRÉDITOS Y TRANSPARENCIA IA */}
+      {showCreditsModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="login-credits-title"
+          className="fixed inset-0 bg-emerald-950/85 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300"
+        >
+          <div className="bg-white/95 backdrop-blur-xl rounded-t-[2.5rem] md:rounded-[2.5rem] w-full max-w-2xl max-h-[88dvh] flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.5)] border-t md:border border-white overflow-hidden">
+            <div className="p-5 sm:p-6 border-b border-stone-200 flex justify-between items-center gap-3 bg-gradient-to-r from-emerald-50 to-white shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="bg-emerald-100 p-2.5 rounded-2xl text-emerald-700 shrink-0">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <div className="min-w-0 text-left">
+                  <h2 id="login-credits-title" className="text-lg sm:text-xl font-black text-stone-800">
+                    Créditos y Transparencia IA
+                  </h2>
+                  <p className="text-stone-500 text-xs font-bold uppercase tracking-wider">
+                    Multimedia Teens 2026 • Categoría Diseño Web
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCreditsModal(false)}
+                aria-label="Cerrar modal de créditos"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center bg-stone-100 hover:bg-stone-200 rounded-full text-stone-600 transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 sm:p-6 overflow-y-auto scrollbar-hide space-y-4 text-left text-stone-700 text-xs sm:text-sm">
+              <div className="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-4">
+                <h3 className="font-black text-emerald-950 uppercase tracking-wider text-xs mb-2 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-emerald-700" /> Equipo Desarrollador e Institución
+                </h3>
+                <p className="font-bold text-stone-800 mb-1">
+                  Institución Educativa: <span className="font-medium">Academia Naval Almirante Illingworth</span>
+                </p>
+                <p className="font-bold text-stone-800 mb-2">
+                  Docente Tutor: <span className="font-medium">Ing. Joel Anthony Torres Urresto</span>
+                </p>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 font-semibold text-stone-700">
+                  <li>• Jordán Maridueña Joel Alexander</li>
+                  <li>• Nieto Martillo Melissa Dakota</li>
+                  <li>• Narváez Durán Francisco Isaías</li>
+                  <li>• Zambrano Aguirre Marcelo Humberto</li>
+                </ul>
+              </div>
+
+              <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 space-y-2.5">
+                <h3 className="font-black text-amber-950 uppercase tracking-wider text-xs flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-600" /> Declaración de Uso de Inteligencia Artificial
+                </h3>
+                <div>
+                  <p className="font-black text-stone-800">Google Antigravity</p>
+                  <p className="text-stone-600 text-xs leading-relaxed">
+                    Intervención directa en el entorno de desarrollo para depuración, refactorización e implementación de código en TypeScript (Next.js) y Python (FastAPI), así como la validación de consultas SQL/RPC en PostgreSQL y revisión de documentación técnica.
+                  </p>
+                </div>
+                <div>
+                  <p className="font-black text-stone-800">Google Gemini</p>
+                  <p className="text-stone-600 text-xs leading-relaxed">
+                    Asistencia consultiva externa (vía chat) para la conceptualización de componentes de interfaz con Tailwind CSS, consulta de buenas prácticas en tipado y generación de plantillas base para pruebas unitarias con Pytest.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

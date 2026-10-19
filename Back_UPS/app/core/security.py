@@ -20,7 +20,7 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
                 headers={"WWW-Authenticate": "Bearer"},
             )
         return user_response.user
-    except Exception as e:
+    except Exception:
         # Cualquier error de la API de auth (token expirado, malformado, etc.)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

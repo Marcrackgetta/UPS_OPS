@@ -68,7 +68,26 @@ export default function Background() {
         .slider-salud::-webkit-slider-thumb { border: 3px solid #ea580c; }
         .slider-salud::-moz-range-track { background: #f97316; }
         .slider-salud::-moz-range-thumb { border: 3px solid #ea580c; }
-      
+
+        @media (prefers-reduced-motion: reduce) {
+          .hoja-otono-der,
+          .hoja-otono-izq {
+            animation: none !important;
+            display: none !important;
+          }
+          .luciernaga,
+          .ekg-scanner-line,
+          .wind-scanner-1,
+          .wind-scanner-2,
+          .wind-scanner-3,
+          .animar-viento-contenedor,
+          .efecto-shiny,
+          .animar-libro,
+          .animar-latido-planeta {
+            animation: none !important;
+            transition: none !important;
+          }
+        }
       `}</style>
 
     </>

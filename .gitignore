@@ -1,5 +1,6 @@
 # Environments & Secrets
 .env
+.env.local
 .env.*
 !.env.example
 *.pem
@@ -35,7 +36,7 @@ yarn-error.log*
 pnpm-debug.log*
 .pnpm-debug.log*
 
-# OS & IDEs
+# OS, IDEs & Logs
 .DS_Store
 Thumbs.db
 Desktop.ini
@@ -44,14 +45,10 @@ Desktop.ini
 .vscode/*
 !.vscode/extensions.json
 
-# Archivos multimedia, documentos y scripts auxiliares excluidos del repositorio
+# Archivos multimedia y documentos locales excluidos del repositorio
 *.mp4
 *.mov
 *.avi
 *.doc
 *.docx
 *.pdf
-/clean_imports.py
-/docs/docx_texts.txt
-/docs/generate_doc.py
-/db/tests/test_cols.py
