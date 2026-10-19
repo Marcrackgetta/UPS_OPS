@@ -143,19 +143,83 @@ def obtener_resumen_dashboard(current_user = Depends(get_current_user)):
         ]
         desglose_racha = _construir_desglose_racha(registros, racha_vigente)
 
-        # 6. Devolver JSON seguro
+        # 6. Resolver Nombre y Apellido (tabla usuarios + user_metadata + fallback cuenta antigua)
+        user_meta = getattr(current_user, "user_metadata", None) or {}
+        email_usuario = (getattr(current_user, "email", None) or perfil.get("email") or "").strip()
+        email_prefix = email_usuario.split("@")[0] if "@" in email_usuario else email_usuario
+
+        db_nombre = (perfil.get("nombre") or "").strip()
+        db_apellido = (perfil.get("apellido") or "").strip()
+        meta_nombre = (user_meta.get("nombre") or "").strip()
+        meta_apellido = (user_meta.get("apellido") or "").strip()
+
+        if not meta_nombre and user_meta.get("full_name"):
+            partes_nombre = str(user_meta.get("full_name")).strip().split(" ", 1)
+            meta_nombre = partes_nombre[0]
+            if len(partes_nombre) > 1 and not meta_apellido:
+                meta_apellido = partes_nombre[1]
+
+        nombre_final = db_nombre
+        if meta_nombre and (not db_nombre or db_nombre == email_prefix):
+            nombre_final = meta_nombre
+        if not nombre_final:
+            nombre_final = email_prefix or "Estudiante"
+
+        apellido_final = db_apellido or meta_apellido or None
+
+        # 7. Calcular y persistir desbloqueos progresivos de Curiosidades ODS 4
+        nivel_actual = int(perfil.get("nivel_actual") or 1)
+        xp_total = int(perfil.get("xp_acumulada") or 0)
+        umbrales_ods4 = [
+            (1, 1, 0),
+            (2, 1, 50),
+            (3, 2, 100),
+            (4, 2, 200),
+            (5, 3, 282),
+            (6, 4, 519),
+            (7, 5, 800),
+        ]
+        guardados_raw = perfil.get("curiosidades_desbloqueadas")
+        guardados = {
+            int(x) for x in (guardados_raw if isinstance(guardados_raw, list) else [1])
+            if str(x).isdigit()
+        }
+        calculados = {
+            cid for cid, req_niv, req_xp in umbrales_ods4
+            if nivel_actual >= req_niv and xp_total >= req_xp
+        }
+        desbloqueados_final = sorted(guardados | calculados | {1})
+
+        campos_sync = {}
+        if meta_nombre and db_nombre != nombre_final:
+            campos_sync["nombre"] = nombre_final
+        if meta_apellido and not db_apellido:
+            campos_sync["apellido"] = meta_apellido
+        if not isinstance(guardados_raw, list) or sorted(guardados) != desbloqueados_final:
+            campos_sync["curiosidades_desbloqueadas"] = desbloqueados_final
+
+        if campos_sync:
+            try:
+                supabase.table("usuarios").update(campos_sync).eq("id", current_user.id).execute()
+            except Exception:
+                pass
+
+        # 8. Devolver JSON seguro
         return DashboardResumen(
-            nombre_usuario=perfil.get("nombre") or "Estudiante",
-            nivel_actual=perfil.get("nivel_actual", 1),
-            xp_total=perfil.get("xp_acumulada", 0),
+            nombre_usuario=nombre_final,
+            apellido_usuario=apellido_final,
+            nivel_actual=nivel_actual,
+            xp_total=xp_total,
             racha_dias=racha_vigente,
             fecha_ultimo_registro=perfil.get("fecha_ultimo_registro"),
             impacto_global_co2=round(total_co2, 3),
             impacto_global_calorias=round(total_calorias, 2),
+            curiosidades_desbloqueadas=desbloqueados_final,
             desglose_grafico=desglose,
             historial=historial_items,
             desglose_racha=desglose_racha
         )
+
 
     except PermissionError as e:
         raise HTTPException(status_code=403, detail=str(e))

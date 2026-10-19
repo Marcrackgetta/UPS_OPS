@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   getDashboard,
   getCatalogoAcciones,
@@ -8,6 +8,11 @@ import {
   mapHistorialItem,
   getFechaGuayaquilISO,
   HistoryItemRecord,
+  CURIOSIDADES_ODS4_CATALOGO,
+  CuriosidadODSItem,
+  calcularIdsCuriosidadesDesbloqueadas,
+  sincronizarPerfilYProgresoSupabase,
+  persistirCuriosidadesSupabase,
 } from '../lib/api';
 
 export interface CatalogoAccionItem {
@@ -29,20 +34,22 @@ export interface RachaDiaItem {
   acciones_registradas: number;
 }
 
-export interface RecompensaEducativaItem {
-  ods: number;
-  titulo: string;
-  contenido: string;
+export interface CuriosidadODSConEstado extends CuriosidadODSItem {
+  desbloqueado: boolean;
+  progresoPct: number;
+  xpFaltante: number;
 }
 
 export interface DashboardData {
   nombre_usuario: string;
+  apellido_usuario?: string | null;
   nivel_actual: number;
   xp_total: number;
   racha_dias: number;
   fecha_ultimo_registro?: string | null;
   impacto_global_co2: number;
   impacto_global_calorias: number;
+  curiosidades_desbloqueadas?: number[];
   desglose_grafico?: Array<{ categoria: string; total_co2_kg: number }>;
   historial?: Array<Record<string, unknown>>;
   desglose_racha?: RachaDiaItem[];
@@ -52,12 +59,11 @@ export function useDashboard() {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [acciones, setAcciones] = useState<CatalogoAccionItem[]>([]);
   const [history, setHistory] = useState<HistoryItemRecord[]>([]);
+  const [unlockedOdsIds, setUnlockedOdsIds] = useState<number[]>([1]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
-  const [recompensa, setRecompensa] = useState<RecompensaEducativaItem | null>(null);
-  const [showReward, setShowReward] = useState(false);
 
   const cargarHistorial = useCallback(async () => {
     setHistoryLoading(true);
@@ -74,6 +80,34 @@ export function useDashboard() {
     }
   }, []);
 
+  const hidratarDashboardYPerfil = useCallback(
+    async (dashRes: DashboardData, catData: CatalogoAccionItem[], isActive: () => boolean = () => true) => {
+      const syncInfo = await sincronizarPerfilYProgresoSupabase(
+        dashRes?.nombre_usuario,
+        Number(dashRes?.nivel_actual || 1),
+        Number(dashRes?.xp_total || 0),
+        dashRes?.curiosidades_desbloqueadas
+      );
+      if (!isActive()) return;
+
+      setUnlockedOdsIds(syncInfo.curiosidadesDesbloqueadas);
+      setDashboard({
+        ...dashRes,
+        nombre_usuario: syncInfo.nombre,
+        apellido_usuario: syncInfo.apellido ?? dashRes?.apellido_usuario ?? null,
+        curiosidades_desbloqueadas: syncInfo.curiosidadesDesbloqueadas,
+      });
+      setAcciones(catData || []);
+
+      if (Array.isArray(dashRes?.historial)) {
+        setHistory(dashRes.historial.map((item: Record<string, unknown>) => mapHistorialItem(item)));
+      } else {
+        await cargarHistorial();
+      }
+    },
+    [cargarHistorial]
+  );
+
   const cargarDatos = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -83,14 +117,7 @@ export function useDashboard() {
         getDashboard(),
         getCatalogoAcciones(),
       ]);
-      setDashboard(dashRes);
-      setAcciones(catRes.data || []);
-
-      if (Array.isArray(dashRes?.historial)) {
-        setHistory(dashRes.historial.map((item: Record<string, unknown>) => mapHistorialItem(item)));
-      } else {
-        await cargarHistorial();
-      }
+      await hidratarDashboardYPerfil(dashRes, catRes.data || []);
     } catch (err: unknown) {
       console.error(err);
       const msg = err instanceof Error ? err.message : 'Error al cargar los datos';
@@ -98,20 +125,14 @@ export function useDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [cargarHistorial]);
+  }, [hidratarDashboardYPerfil]);
 
   useEffect(() => {
     let active = true;
     Promise.all([getDashboard(), getCatalogoAcciones()])
       .then(async ([dashRes, catRes]) => {
         if (!active) return;
-        setDashboard(dashRes);
-        setAcciones(catRes.data || []);
-        if (Array.isArray(dashRes?.historial)) {
-          setHistory(dashRes.historial.map((item: Record<string, unknown>) => mapHistorialItem(item)));
-        } else {
-          await cargarHistorial();
-        }
+        await hidratarDashboardYPerfil(dashRes, catRes.data || [], () => active);
       })
       .catch((err: unknown) => {
         if (!active) return;
@@ -126,7 +147,7 @@ export function useDashboard() {
     return () => {
       active = false;
     };
-  }, [cargarHistorial]);
+  }, [hidratarDashboardYPerfil]);
 
   const handleAction = async (accion_id: number) => {
     try {
@@ -153,6 +174,15 @@ export function useDashboard() {
 
       setHistory((prev) => [nuevoItem, ...prev]);
       setHistoryError(null);
+
+      const nuevoNivel = Number(res.estado_usuario?.nivel_actual ?? dashboard?.nivel_actual ?? 1);
+      const nuevaXp = Number(res.estado_usuario?.xp_total ?? (Number(dashboard?.xp_total || 0) + xpGanada));
+      const nuevosDesbloqueados = calcularIdsCuriosidadesDesbloqueadas(nuevoNivel, nuevaXp, unlockedOdsIds);
+
+      if (nuevosDesbloqueados.length !== unlockedOdsIds.length) {
+        setUnlockedOdsIds(nuevosDesbloqueados);
+        void persistirCuriosidadesSupabase(nuevosDesbloqueados);
+      }
 
       setDashboard((prev) => {
         if (!prev) return prev;
@@ -188,17 +218,14 @@ export function useDashboard() {
           ...prev,
           impacto_global_co2: Number((Number(prev.impacto_global_co2 || 0) + co2Ganado).toFixed(3)),
           impacto_global_calorias: Number((Number(prev.impacto_global_calorias || 0) + calGanadas).toFixed(2)),
-          xp_total: res.estado_usuario.xp_total,
-          nivel_actual: res.estado_usuario.nivel_actual,
+          xp_total: nuevaXp,
+          nivel_actual: nuevoNivel,
           racha_dias: nuevaRacha,
           fecha_ultimo_registro: fechaHoy,
+          curiosidades_desbloqueadas: nuevosDesbloqueados,
           desglose_racha: nuevoDesgloseRacha,
         };
       });
-
-      if (res.recompensa_educativa) {
-        setRecompensa(res.recompensa_educativa);
-      }
 
       return res;
     } catch (err: unknown) {
@@ -209,24 +236,40 @@ export function useDashboard() {
     }
   };
 
-  const closeReward = () => {
-    setShowReward(false);
-    setRecompensa(null);
-  };
+  const curiosidadesOds: CuriosidadODSConEstado[] = useMemo(() => {
+    const niv = Number(dashboard?.nivel_actual || 1);
+    const xp = Number(dashboard?.xp_total || 0);
+    const idsActivos = new Set(calcularIdsCuriosidadesDesbloqueadas(niv, xp, unlockedOdsIds));
+
+    return CURIOSIDADES_ODS4_CATALOGO.map((item) => {
+      const desbloqueado = idsActivos.has(item.id);
+      const progresoPct =
+        desbloqueado || item.reqXp <= 0
+          ? 100
+          : Math.min(99, Math.max(0, Math.round((xp / item.reqXp) * 100)));
+      const xpFaltante = desbloqueado ? 0 : Math.max(0, item.reqXp - xp);
+
+      return {
+        ...item,
+        desbloqueado,
+        progresoPct,
+        xpFaltante,
+      };
+    });
+  }, [dashboard?.nivel_actual, dashboard?.xp_total, unlockedOdsIds]);
 
   return {
     dashboard,
     history,
     acciones,
+    curiosidadesOds,
     loading,
     error,
     historyLoading,
     historyError,
-    recompensa,
-    showReward,
     handleAction,
-    closeReward,
     refreshData: cargarDatos,
     refreshHistory: cargarHistorial,
   };
 }
+

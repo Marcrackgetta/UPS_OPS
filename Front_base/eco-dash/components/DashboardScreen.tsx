@@ -26,6 +26,8 @@ import {
   LogOut,
   AlertCircle,
   Loader2,
+  Lock,
+  CheckCircle2,
 } from 'lucide-react';
 import Background from './Background';
 import { AnimatedHeartIcon, AnimatedWindIcon } from './AnimatedIcons';
@@ -65,15 +67,13 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
   const {
     dashboard,
     acciones,
+    curiosidadesOds,
     history,
     loading,
     error,
     historyLoading,
     historyError,
-    recompensa,
-    showReward,
     handleAction,
-    closeReward,
     refreshData,
     refreshHistory,
   } = useDashboard();
@@ -105,8 +105,8 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
     showStreakModal ||
     showHistoryModal ||
     showCuriositiesModal ||
-    showImpactModal ||
-    showReward;
+    showImpactModal;
+
 
   useEffect(() => {
     if (typeof document === 'undefined') return;
@@ -199,13 +199,13 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={refreshData}
-              className="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm uppercase tracking-wider transition-all cursor-pointer"
+              className="min-h-[44px] px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm uppercase tracking-wider transition-all cursor-pointer"
             >
               Reintentar
             </button>
             <button
               onClick={onLogout}
-              className="px-5 py-3 rounded-2xl bg-rose-500/30 hover:bg-rose-500 text-white font-bold text-sm transition-all cursor-pointer"
+              className="min-h-[44px] px-5 py-3 rounded-2xl bg-rose-500/30 hover:bg-rose-500 text-white font-bold text-sm transition-all cursor-pointer"
             >
               Cerrar Sesión
             </button>
@@ -219,13 +219,14 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
   const calories = Math.round(Number(dashboard.impacto_global_calorias || 0));
   const totalScore = dashboard.xp_total || 0;
   const nivel = dashboard.nivel_actual || 1;
-  const nombre = dashboard.nombre_usuario || 'Estudiante';
+  const nombre = (dashboard.nombre_usuario || '').trim() || 'Estudiante';
+  const desbloqueadasCount = curiosidadesOds.filter((item) => item.desbloqueado).length;
 
   const co2Percent = Math.min((co2 / goalCo2) * 100, 100);
   const calPercent = Math.min((calories / goalCalories) * 100, 100);
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-br from-emerald-950 via-green-900 to-teal-950 text-stone-800 p-4 sm:p-6 md:p-8 font-sans selection:bg-green-500 selection:text-white overflow-x-hidden relative">
+    <div className="min-h-[100dvh] bg-gradient-to-br from-emerald-950 via-green-900 to-teal-950 text-stone-800 px-3.5 py-4 sm:p-6 md:p-8 font-sans selection:bg-green-500 selection:text-white overflow-x-hidden relative">
       <Background />
 
       <div
@@ -234,37 +235,39 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         }`}
       >
         {/* CABECERA PRINCIPAL */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 md:mb-10 gap-4">
-          <div className="min-w-0">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-5 sm:mb-6 md:mb-10 gap-4">
+          <div className="min-w-0 w-full lg:w-auto">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tighter flex flex-wrap items-center gap-x-2 gap-y-1 drop-shadow-lg">
               <span>Kawsay</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-green-400 drop-shadow-none">
                 Eco-Dash
               </span>
             </h1>
-            <p className="text-emerald-200/90 mt-1.5 sm:mt-2 font-medium text-sm sm:text-base md:text-lg flex items-center gap-2">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 animate-pulse drop-shadow-md shrink-0" />
-              <span className="truncate">Hola, {nombre} • Tu huella verde de hoy</span>
+            <p className="text-emerald-200/90 mt-1.5 sm:mt-2 font-medium text-sm sm:text-base md:text-lg flex items-start sm:items-center gap-2">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 animate-pulse drop-shadow-md shrink-0 mt-0.5 sm:mt-0" />
+              <span className="break-words leading-snug">
+                Hola, <strong className="text-white font-extrabold">{nombre}</strong> • Tu huella verde de hoy
+              </span>
             </p>
           </div>
 
-          <div className="flex flex-row flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto">
+          <div className="grid grid-cols-2 sm:flex sm:flex-row sm:flex-wrap items-center gap-2.5 sm:gap-3 w-full lg:w-auto">
             <button
               onClick={() => setShowGoalModal(true)}
-              className="group flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 sm:px-5 py-2.5 sm:py-3 min-h-[44px] rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:border-emerald-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-white font-bold text-xs sm:text-sm justify-center"
+              className="group flex items-center gap-2 bg-white/10 backdrop-blur-xl px-3.5 sm:px-5 py-2.5 sm:py-3 min-h-[44px] rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:border-emerald-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-white font-bold text-xs sm:text-sm justify-center"
             >
               <SlidersHorizontal className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500 text-emerald-300 shrink-0" />
-              <span>Ajustar Metas</span>
+              <span className="truncate">Ajustar Metas</span>
             </button>
 
             <button
               onClick={() => setShowStreakModal(true)}
-              className="group flex items-center gap-2.5 bg-white/10 backdrop-blur-xl px-4 sm:px-5 py-2 sm:py-2.5 min-h-[44px] rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:shadow-[0_8px_30px_rgba(251,146,60,0.4)] hover:border-orange-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer justify-center"
+              className="group flex items-center gap-2 bg-white/10 backdrop-blur-xl px-3.5 sm:px-5 py-2 sm:py-2.5 min-h-[44px] rounded-full border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-white/20 hover:shadow-[0_8px_30px_rgba(251,146,60,0.4)] hover:border-orange-300/50 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer justify-center"
             >
               <div className="bg-gradient-to-tr from-orange-400 to-yellow-400 p-1.5 rounded-full shadow-[0_0_15px_rgba(251,146,60,0.5)] text-white group-hover:scale-110 transition-transform shrink-0">
                 <Flame className="w-4 h-4 sm:w-5 sm:h-5 animate-bounce" />
               </div>
-              <span className="font-black text-base sm:text-lg md:text-xl text-white drop-shadow-md leading-none">
+              <span className="font-black text-base sm:text-lg md:text-xl text-white drop-shadow-md leading-none truncate">
                 {streak}{' '}
                 <span className="text-emerald-100 font-medium text-xs sm:text-sm md:text-base group-hover:text-white transition-colors">
                   {streak === 1 ? 'Día' : 'Días'}
@@ -275,7 +278,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             <button
               onClick={onLogout}
               aria-label="Cerrar Sesión"
-              className="group flex items-center gap-2 bg-rose-500/20 backdrop-blur-xl px-4 sm:px-5 py-2.5 sm:py-3 min-h-[44px] rounded-full border border-rose-500/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-rose-500 hover:border-rose-400 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-rose-100 hover:text-white font-bold text-xs sm:text-sm justify-center ml-auto sm:ml-0"
+              className="col-span-2 sm:col-span-1 group flex items-center gap-2 bg-rose-500/20 backdrop-blur-xl px-4 sm:px-5 py-2.5 sm:py-3 min-h-[44px] rounded-full border border-rose-500/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:bg-rose-500 hover:border-rose-400 transition-all duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer text-rose-100 hover:text-white font-bold text-xs sm:text-sm justify-center"
             >
               <LogOut className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 shrink-0" />
               <span>Cerrar Sesión</span>
@@ -284,23 +287,23 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         </div>
 
         {/* BANNER PUNTAJE KAWSAY TOTAL */}
-        <div className="mb-6 md:mb-8 bg-gradient-to-br from-green-500 via-emerald-600 to-green-700 p-6 sm:p-8 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(4,120,87,0.6)] border border-white/10 transition-all duration-500 relative overflow-hidden group hover:-translate-y-1">
-          <div className="absolute -right-20 -top-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
-          <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+        <div className="mb-6 md:mb-8 bg-gradient-to-br from-green-500 via-emerald-600 to-green-700 p-5 sm:p-8 rounded-3xl sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:shadow-[0_20px_60px_rgba(4,120,87,0.6)] border border-white/10 transition-all duration-500 relative overflow-hidden group hover:-translate-y-1">
+          <div className="absolute -right-20 -top-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000 pointer-events-none"></div>
+          <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000 pointer-events-none"></div>
           <div className="absolute -right-6 -top-6 text-white/20 group-hover:rotate-12 transition-transform duration-700 pointer-events-none">
-            <Leaf className="w-48 h-48 sm:w-64 sm:h-64 drop-shadow-2xl" />
+            <Leaf className="w-40 h-40 sm:w-64 sm:h-64 drop-shadow-2xl" />
           </div>
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 min-w-0">
+            <div className="min-w-0">
               <h2 className="text-green-50 font-bold tracking-widest uppercase text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2 drop-shadow-md">
                 <Target className="w-4 h-4 shrink-0" /> Puntaje Kawsay Total
               </h2>
-              <div className="flex flex-wrap items-end gap-2.5 sm:gap-3">
-                <span className="text-5xl sm:text-6xl md:text-7xl font-black text-white drop-shadow-xl tracking-tighter leading-none">
+              <div className="flex flex-wrap items-end gap-2 sm:gap-3">
+                <span className="text-4xl sm:text-6xl md:text-7xl font-black text-white drop-shadow-xl tracking-tighter leading-none break-all">
                   {totalScore}
                 </span>
-                <span className="text-lg sm:text-2xl font-bold text-green-900 mb-1 flex items-center bg-white/90 backdrop-blur-sm px-3 py-1 rounded-2xl shadow-lg border border-white">
-                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 mr-1 shrink-0" /> pts
+                <span className="text-base sm:text-2xl font-bold text-green-900 mb-0.5 sm:mb-1 flex items-center bg-white/90 backdrop-blur-sm px-3 py-1 rounded-2xl shadow-lg border border-white">
+                  <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 mr-1 shrink-0" /> pts
                 </span>
               </div>
             </div>
@@ -309,6 +312,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </div>
           </div>
         </div>
+
 
         {/* GRILLA PRINCIPAL */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 relative">
@@ -427,27 +431,29 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             <div className="mt-auto flex flex-col justify-center gap-3.5 h-full lg:h-auto">
               <button
                 onClick={() => setShowHistoryModal(true)}
-                className="w-full py-4 px-4 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/40 hover:bg-white/90 text-white hover:text-stone-800 font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-[0_10px_30px_rgba(0,0,0,0.2)] active:scale-95 cursor-pointer"
+                className="w-full min-h-[48px] py-3.5 sm:py-4 px-4 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/40 hover:bg-white/90 text-white hover:text-stone-800 font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-[0_10px_30px_rgba(0,0,0,0.2)] active:scale-95 cursor-pointer"
               >
-                <CalendarDays className="w-5 h-5 shrink-0" /> Ver todo mi historial
+                <CalendarDays className="w-5 h-5 shrink-0" />
+                <span>Ver todo mi historial</span>
               </button>
               <button
                 onClick={() => setShowCuriositiesModal(true)}
-                className="w-full py-4 px-4 rounded-2xl bg-yellow-400/20 backdrop-blur-xl border border-yellow-400/40 hover:bg-yellow-400 text-yellow-100 hover:text-yellow-900 font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-[0_10px_30px_rgba(253,224,71,0.3)] active:scale-95 cursor-pointer"
+                className="w-full min-h-[48px] py-3.5 sm:py-4 px-4 rounded-2xl bg-yellow-400/20 backdrop-blur-xl border border-yellow-400/40 hover:bg-yellow-400 text-yellow-100 hover:text-yellow-950 font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-[0_10px_30px_rgba(253,224,71,0.3)] active:scale-95 cursor-pointer"
               >
-                <Sparkles className="w-5 h-5 shrink-0" /> Curiosidades ODS
+                <Sparkles className="w-5 h-5 shrink-0" />
+                <span>Curiosidades ODS ({desbloqueadasCount}/{curiosidadesOds.length})</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* SECCIÓN INFERIOR: CATÁLOGO (SIEMBRA UNA ACCIÓN) */}
-        <div className="mt-6 md:mt-8 bg-white/80 backdrop-blur-2xl p-5 sm:p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
+        <div className="mt-6 md:mt-8 bg-white/80 backdrop-blur-2xl p-4 sm:p-7 rounded-3xl sm:rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
           <h2 className="text-lg sm:text-xl font-black text-stone-800 mb-4 sm:mb-5 flex items-center gap-2">
             <Leaf className="w-6 h-6 text-green-600 shrink-0" /> Siembra una acción
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {acciones.map((acc) => {
               const catLower = String(acc.categoria || '').toLowerCase();
               const isSalud =
@@ -467,17 +473,17 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 <button
                   key={acc.id}
                   onClick={() => handleAction(acc.id)}
-                  className="group relative overflow-hidden flex items-center gap-4 bg-white border-2 p-4 rounded-2xl transition-all duration-300 text-left border-green-100 hover:border-green-400 active:scale-[0.97] shadow-sm hover:shadow-[0_10px_20px_rgba(74,222,128,0.3)] cursor-pointer"
+                  className="group relative overflow-hidden w-full min-h-[68px] flex items-center gap-3.5 sm:gap-4 bg-white border-2 p-3.5 sm:p-4 rounded-2xl transition-all duration-300 text-left border-green-100 hover:border-green-400 active:scale-[0.97] shadow-sm hover:shadow-[0_10px_20px_rgba(74,222,128,0.3)] cursor-pointer"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-emerald-50 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out z-0" />
                   <div className="bg-gradient-to-br from-green-400 to-emerald-600 p-3 rounded-xl shadow-lg shadow-green-500/40 z-10 transition-transform text-white border border-green-300 shrink-0">
                     <IconCmp className="w-6 h-6 text-white" />
                   </div>
-                  <div className="z-10 min-w-0">
-                    <h3 className="font-black text-base sm:text-lg text-stone-800 group-hover:text-green-900 transition-colors leading-snug break-words">
+                  <div className="z-10 min-w-0 flex-1">
+                    <h3 className="font-black text-sm sm:text-lg text-stone-800 group-hover:text-green-900 transition-colors leading-snug break-words">
                       {acc.titulo}
                     </h3>
-                    <p className="text-stone-500 text-xs sm:text-sm font-bold mt-0.5">
+                    <p className="text-stone-500 text-xs sm:text-sm font-bold mt-0.5 break-words">
                       +{acc.impacto_co2_kg}kg CO2
                       {Number(acc.calorias_estimadas) > 0 ? ` | +${acc.calorias_estimadas} kcal` : ''} | +
                       {acc.xp_otorgada} XP
@@ -490,43 +496,121 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         </div>
       </div>
 
-      {/* MODAL 1: CURIOSIDADES / RECOMPENSA */}
-      {(showReward || showCuriositiesModal) && (
-        <div className="fixed inset-0 bg-emerald-950/80 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
-          <div className="group relative bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 p-6 sm:p-7 md:p-8 rounded-t-[2.5rem] rounded-b-none md:rounded-b-[2.5rem] shadow-[0_-10px_60px_rgba(253,224,71,0.5)] md:shadow-[0_30px_60px_rgba(253,224,71,0.5)] animate-in slide-in-from-bottom-full md:zoom-in-95 duration-400 w-full max-w-md max-h-[90dvh] overflow-y-auto border-t-2 md:border-2 border-yellow-400">
-            <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0 pointer-events-none"></div>
-            <div className="absolute -right-4 -top-4 w-32 h-32 bg-yellow-400 opacity-40 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none"></div>
+      {/* MODAL 1: CURIOSIDADES ODS 4 (LISTA PROGRESIVA GAMIFICADA) */}
+      {showCuriositiesModal && (
+        <div className="fixed inset-0 bg-emerald-950/85 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
+          <div className="relative bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 rounded-t-[2rem] md:rounded-[2.5rem] shadow-[0_-10px_60px_rgba(253,224,71,0.35)] md:shadow-[0_30px_60px_rgba(0,0,0,0.5)] animate-in slide-in-from-bottom-full md:zoom-in-95 duration-400 w-full max-w-2xl max-h-[90dvh] flex flex-col border-t-2 md:border-2 border-yellow-400 overflow-hidden">
+            {/* Cabecera Fija del Modal ODS 4 */}
+            <div className="p-4 sm:p-6 md:p-7 border-b border-yellow-300/80 bg-gradient-to-r from-yellow-100 via-amber-100 to-yellow-200 shrink-0 relative">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="bg-gradient-to-br from-yellow-400 to-amber-500 p-3 sm:p-3.5 rounded-2xl shadow-lg shadow-yellow-500/40 text-white border border-yellow-300 animar-libro shrink-0">
+                    <BookOpen className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-md" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      <span className="bg-amber-600 text-white font-black text-[10px] sm:text-xs uppercase tracking-widest px-2.5 py-0.5 rounded-full shadow-sm">
+                        ODS 4 • Educación de Calidad
+                      </span>
+                      <span className="bg-white/80 text-amber-900 font-extrabold text-[10px] sm:text-xs uppercase tracking-wider px-2.5 py-0.5 rounded-full border border-amber-300">
+                        {desbloqueadasCount} / {curiosidadesOds.length} Desbloqueadas
+                      </span>
+                    </div>
+                    <h2 className="font-black text-stone-800 text-xl sm:text-2xl leading-tight mt-1.5 break-words">
+                      Curiosidades ODS
+                    </h2>
+                    <p className="text-amber-900/80 text-xs sm:text-sm font-bold mt-0.5">
+                      Tu progreso actual: Nivel {nivel} • {totalScore} pts XP
+                    </p>
+                  </div>
+                </div>
 
-            <button
-              onClick={() => {
-                closeReward();
-                setShowCuriositiesModal(false);
-              }}
-              aria-label="Cerrar modal"
-              className="absolute top-4 right-4 z-20 text-yellow-700 hover:text-yellow-950 bg-yellow-200/70 hover:bg-yellow-300 p-2.5 rounded-full transition-all cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3.5 sm:gap-4 mb-4 md:mb-5 pr-12 relative z-10">
-              <div className="bg-gradient-to-br from-yellow-400 to-amber-500 p-3 sm:p-4 rounded-xl md:rounded-2xl shadow-lg shadow-yellow-500/50 text-white border border-yellow-300 animar-libro group-hover:-rotate-12 transition-transform shrink-0">
-                <BookOpen className="w-6 h-6 md:w-8 md:h-8 drop-shadow-md" />
+                <button
+                  onClick={() => setShowCuriositiesModal(false)}
+                  aria-label="Cerrar modal"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center text-yellow-800 hover:text-yellow-950 bg-yellow-200/80 hover:bg-yellow-300 rounded-full transition-all shrink-0 cursor-pointer"
+                >
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
               </div>
-              <div className="min-w-0">
-                <span className="text-yellow-800 font-black text-xs uppercase tracking-widest flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-orange-600 animate-pulse shrink-0" /> Sabías que...
-                </span>
-                <h3 className="font-black text-stone-800 text-lg sm:text-xl md:text-2xl leading-tight mt-1 group-hover:text-amber-700 transition-colors break-words">
-                  {recompensa?.titulo || 'Semilla de Saber'}
-                </h3>
+
+              {/* Barra general de colección ODS 4 */}
+              <div className="mt-3.5 w-full bg-amber-900/15 rounded-full h-2.5 overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-amber-500 to-green-500 h-full rounded-full transition-all duration-700"
+                  style={{ width: `${Math.round((desbloqueadasCount / Math.max(1, curiosidadesOds.length)) * 100)}%` }}
+                />
               </div>
             </div>
 
-            <div className="relative z-10 bg-white/50 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-white/60 shadow-inner group-hover:bg-white/65 transition-colors">
-              <p className="text-yellow-950 font-bold text-sm md:text-base leading-relaxed">
-                {recompensa?.contenido ||
-                  'Caminar 30 mins diarios reduce tu huella de carbono a cero y cuida tu corazón. ¡Cada paso es un respiro para el planeta!'}
-              </p>
+            {/* Lista Progresiva Estilo Videojuego */}
+            <div className="p-4 sm:p-6 overflow-y-auto scrollbar-hide flex flex-col gap-3.5 sm:gap-4 pb-6 sm:pb-6">
+              {curiosidadesOds.map((item) =>
+                item.desbloqueado ? (
+                  <div
+                    key={item.id}
+                    className="relative bg-white/95 rounded-2xl p-4 sm:p-5 border-2 border-amber-300 shadow-md transition-all"
+                  >
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-emerald-400 to-green-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                          <span className="text-[11px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                            Cápsula #{item.id} • ODS 4 Desbloqueada
+                          </span>
+                          <span className="text-[11px] font-bold text-amber-700">
+                            {item.requisitoTexto}
+                          </span>
+                        </div>
+                        <h3 className="font-black text-stone-800 text-base sm:text-lg leading-snug break-words">
+                          {item.titulo}
+                        </h3>
+                        <p className="text-stone-700 font-medium text-xs sm:text-sm leading-relaxed mt-1.5 break-words">
+                          {item.contenido}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    key={item.id}
+                    className="relative bg-stone-900/90 text-stone-300 rounded-2xl p-4 sm:p-5 border-2 border-stone-700/80 shadow-inner overflow-hidden"
+                  >
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-stone-800 border border-stone-600 text-amber-400 flex items-center justify-center shrink-0 shadow-inner">
+                        <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                          <span className="text-[11px] font-black uppercase tracking-widest text-stone-300 bg-stone-800 px-2.5 py-0.5 rounded-full border border-stone-600">
+                            Cápsula #{item.id} • ODS 4 Bloqueada
+                          </span>
+                          <span className="text-[11px] font-black text-amber-300 bg-amber-500/15 border border-amber-400/30 px-2.5 py-0.5 rounded-full">
+                            Requisito: {item.requisitoTexto}
+                          </span>
+                        </div>
+                        <h3 className="font-black text-stone-400 text-base sm:text-lg leading-snug select-none">
+                          ??? • Conocimiento Sostenible Oculto
+                        </h3>
+                        <p className="text-stone-400/80 text-xs sm:text-sm mt-1 leading-relaxed">
+                          Suma puntos registrando acciones ecológicas para desbloquear esta cápsula de Educación de Calidad (ODS 4).
+                          {item.xpFaltante > 0
+                            ? ` Te faltan ${item.xpFaltante} pts XP.`
+                            : ` Requiere alcanzar el Nivel ${item.reqNivel}.`}
+                        </p>
+                        <div className="mt-3 w-full bg-stone-800 rounded-full h-2 overflow-hidden border border-stone-700">
+                          <div
+                            className="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full transition-all duration-500"
+                            style={{ width: `${item.progresoPct}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -535,7 +619,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL 2: IMPACTO AMBIENTAL REAL */}
       {showImpactModal && (
         <div className="fixed inset-0 bg-emerald-950/90 backdrop-blur-xl z-50 flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-300">
-          <div className="bg-emerald-950 rounded-t-[2.5rem] rounded-b-none md:rounded-b-[2.5rem] w-full max-w-4xl max-h-[90dvh] flex flex-col shadow-[0_-10px_60px_rgba(0,0,0,0.5)] md:shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in slide-in-from-bottom-full md:zoom-in-95 duration-400 border-t md:border border-emerald-800 p-5 sm:p-6 md:p-8 overflow-y-auto scrollbar-hide">
+          <div className="bg-emerald-950 rounded-t-[2.5rem] rounded-b-none md:rounded-b-[2.5rem] w-full max-w-4xl max-h-[90dvh] flex flex-col shadow-[0_-10px_60px_rgba(0,0,0,0.5)] md:shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative animate-in slide-in-from-bottom-full md:zoom-in-95 duration-400 border-t md:border border-emerald-800 p-5 sm:p-6 md:p-8 pb-7 sm:pb-8 overflow-y-auto scrollbar-hide">
             <div className="absolute -right-20 -top-20 w-72 h-72 bg-emerald-500 opacity-10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div className="flex justify-between items-start gap-4 mb-5 md:mb-8 relative z-10">
@@ -550,11 +634,12 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <button
                 onClick={() => setShowImpactModal(false)}
                 aria-label="Cerrar modal"
-                className="p-2.5 sm:p-3 bg-emerald-800/50 border border-emerald-700/50 rounded-full text-emerald-200 hover:text-white hover:bg-emerald-700 hover:rotate-90 transition-all shrink-0 cursor-pointer"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 sm:p-3 bg-emerald-800/50 border border-emerald-700/50 rounded-full text-emerald-200 hover:text-white hover:bg-emerald-700 hover:rotate-90 transition-all shrink-0 cursor-pointer"
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
+
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 md:gap-6 relative z-10">
               {/* Card 1: Árboles */}
@@ -634,13 +719,13 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <button
                 onClick={() => setShowGoalModal(false)}
                 aria-label="Cerrar modal"
-                className="p-2.5 sm:p-3 bg-white border border-stone-200 rounded-full text-stone-400 hover:text-stone-800 hover:bg-stone-100 hover:rotate-90 transition-all shadow-sm shrink-0 cursor-pointer"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 sm:p-3 bg-white border border-stone-200 rounded-full text-stone-400 hover:text-stone-800 hover:bg-stone-100 hover:rotate-90 transition-all shadow-sm shrink-0 cursor-pointer"
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 md:p-8 bg-stone-50/50 overflow-y-auto scrollbar-hide">
+            <div className="p-5 sm:p-6 md:p-8 pb-7 sm:pb-8 bg-stone-50/50 overflow-y-auto scrollbar-hide">
               <div className="flex flex-col gap-4 sm:gap-6 md:gap-8">
                 {/* Meta de CO2 */}
                 <div className="bg-white/90 backdrop-blur-2xl p-4 sm:p-5 md:p-7 rounded-2xl md:rounded-[2rem] border border-stone-200/80 md:border-white/60 shadow-sm md:shadow-2xl md:shadow-black/10">
@@ -659,7 +744,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                     step="5"
                     value={goalCo2}
                     onChange={(e) => setGoalCo2(Number(e.target.value))}
-                    className="slider-clima"
+                    className="slider-clima min-h-[44px]"
                   />
                   <div className="flex justify-between text-[11px] text-stone-400 font-bold mt-2 uppercase">
                     <span>5 kg</span>
@@ -684,7 +769,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                     step="100"
                     value={goalCalories}
                     onChange={(e) => setGoalCalories(Number(e.target.value))}
-                    className="slider-salud"
+                    className="slider-salud min-h-[44px]"
                   />
                   <div className="flex justify-between text-[11px] text-stone-400 font-bold mt-2 uppercase">
                     <span>500 kcal</span>
@@ -694,7 +779,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
                 <button
                   onClick={() => setShowGoalModal(false)}
-                  className="w-full bg-stone-800 hover:bg-stone-900 text-white font-black uppercase tracking-widest text-sm py-3.5 md:py-4 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full min-h-[48px] bg-stone-800 hover:bg-stone-900 text-white font-black uppercase tracking-widest text-sm py-3.5 md:py-4 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Target className="w-5 h-5" /> Guardar Mis Metas
                 </button>
@@ -723,13 +808,13 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <button
                 onClick={() => setShowHistoryModal(false)}
                 aria-label="Cerrar modal"
-                className="p-2.5 sm:p-3 bg-white border border-stone-200 rounded-full text-stone-400 hover:text-stone-800 hover:bg-stone-100 hover:rotate-90 transition-all shadow-sm shrink-0 cursor-pointer"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 sm:p-3 bg-white border border-stone-200 rounded-full text-stone-400 hover:text-stone-800 hover:bg-stone-100 hover:rotate-90 transition-all shadow-sm shrink-0 cursor-pointer"
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto scrollbar-hide">
+            <div className="p-5 sm:p-6 md:p-8 pb-7 sm:pb-8 overflow-y-auto scrollbar-hide">
               {historyLoading ? (
                 <div className="text-center py-12 flex flex-col items-center gap-3 text-stone-500">
                   <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
@@ -741,7 +826,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                   <p className="text-rose-800 font-bold text-sm">{historyError}</p>
                   <button
                     onClick={refreshHistory}
-                    className="mt-1 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-colors cursor-pointer"
+                    className="mt-1 min-h-[44px] px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-colors cursor-pointer"
                   >
                     <RefreshCw className="w-4 h-4" /> Reintentar
                   </button>
@@ -816,13 +901,13 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
               <button
                 onClick={() => setShowStreakModal(false)}
                 aria-label="Cerrar modal"
-                className="p-2.5 sm:p-3 bg-white border border-stone-200 rounded-full text-stone-400 hover:text-stone-800 hover:bg-stone-100 hover:rotate-90 transition-all shadow-sm shrink-0 cursor-pointer"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 sm:p-3 bg-white border border-stone-200 rounded-full text-stone-400 hover:text-stone-800 hover:bg-stone-100 hover:rotate-90 transition-all shadow-sm shrink-0 cursor-pointer"
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
-            <div className="p-5 sm:p-6 md:p-8 overflow-y-auto scrollbar-hide bg-stone-50/50">
+            <div className="p-5 sm:p-6 md:p-8 pb-7 sm:pb-8 overflow-y-auto scrollbar-hide bg-stone-50/50">
               {streak > 0 && streakData.length > 0 ? (
                 <div className="flex flex-col gap-4">
                   {streakData.map((dia) => (
@@ -866,7 +951,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
       {/* MODAL 6: VICTORIA TOTAL */}
       {showVictoryModal && (
         <div className="fixed inset-0 z-[100] bg-emerald-950/90 backdrop-blur-2xl flex items-end md:items-center justify-center p-0 md:p-4 animate-in fade-in duration-500">
-          <div className="relative w-full max-w-lg max-h-[90dvh] overflow-y-auto scrollbar-hide p-6 sm:p-8 md:p-10 rounded-t-[2.5rem] md:rounded-[3rem] rounded-b-none md:rounded-b-[3rem] shadow-[0_-10px_100px_rgba(234,179,8,0.5)] border-t-2 md:border-2 text-center animate-in slide-in-from-bottom-full md:zoom-in-95 duration-500 bg-gradient-to-br from-emerald-600 via-green-500 to-orange-500 border-yellow-300">
+          <div className="relative w-full max-w-lg max-h-[90dvh] overflow-y-auto scrollbar-hide p-6 sm:p-8 md:p-10 pb-8 rounded-t-[2.5rem] md:rounded-[3rem] rounded-b-none md:rounded-b-[3rem] shadow-[0_-10px_100px_rgba(234,179,8,0.5)] border-t-2 md:border-2 text-center animate-in slide-in-from-bottom-full md:zoom-in-95 duration-500 bg-gradient-to-br from-emerald-600 via-green-500 to-orange-500 border-yellow-300">
             <div className="absolute inset-0 w-full h-full efecto-shiny mix-blend-overlay opacity-60 z-0 pointer-events-none"></div>
             <div className="absolute -left-10 -top-10 w-48 h-48 bg-white opacity-20 rounded-full blur-3xl pointer-events-none"></div>
             <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-yellow-300 opacity-40 rounded-full blur-3xl pointer-events-none"></div>
@@ -901,8 +986,9 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
             <button
               onClick={() => setVictoryDismissed(true)}
-              className="relative z-10 w-full bg-white text-stone-900 hover:bg-stone-100 font-black uppercase tracking-widest text-sm py-3.5 md:py-4 rounded-2xl shadow-xl hover:shadow-[0_10px_30px_rgba(255,255,255,0.4)] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="relative z-10 w-full min-h-[48px] bg-white text-stone-900 hover:bg-stone-100 font-black uppercase tracking-widest text-sm py-3.5 md:py-4 rounded-2xl shadow-xl hover:shadow-[0_10px_30px_rgba(255,255,255,0.4)] hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
+
               <Sparkles className="w-5 h-5 text-yellow-500" /> ¡Continuar!
             </button>
           </div>

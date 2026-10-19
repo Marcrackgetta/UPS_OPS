@@ -156,3 +156,227 @@ export async function getHistorialRegistros(limit?: number): Promise<HistoryItem
     return (data || []).map(mapHistorialItem);
 }
 
+export interface CuriosidadODSItem {
+    id: number;
+    ods: 4;
+    reqNivel: number;
+    reqXp: number;
+    requisitoTexto: string;
+    titulo: string;
+    contenido: string;
+}
+
+export const CURIOSIDADES_ODS4_CATALOGO: CuriosidadODSItem[] = [
+    {
+        id: 1,
+        ods: 4,
+        reqNivel: 1,
+        reqXp: 0,
+        requisitoTexto: 'Nivel 1 • Inicial (0 XP)',
+        titulo: 'Semilla del Saber Sostenible',
+        contenido:
+            'La Educación para el Desarrollo Sostenible (ODS 4.7) impulsa hábitos conscientes: caminar 30 minutos diarios reduce tu huella de carbono a cero y fortalece tu salud cardiovascular.',
+    },
+    {
+        id: 2,
+        ods: 4,
+        reqNivel: 1,
+        reqXp: 50,
+        requisitoTexto: 'Nivel 1 • 50 pts XP',
+        titulo: 'Alfabetización Climática en el Campus',
+        contenido:
+            'Según la UNESCO (ODS 4), medir tu impacto ambiental durante la etapa universitaria triplica la probabilidad de mantener hábitos ecológicos permanentes en el hogar.',
+    },
+    {
+        id: 3,
+        ods: 4,
+        reqNivel: 2,
+        reqXp: 100,
+        requisitoTexto: 'Alcanzar Nivel 2 (100 pts XP)',
+        titulo: 'Ciencia Ciudadana Universitaria',
+        contenido:
+            'Al registrar cada acción verde, transformas tu rutina diaria en evidencia cuantificable que fortalece la cultura ambiental y el aprendizaje colaborativo del ODS 4.',
+    },
+    {
+        id: 4,
+        ods: 4,
+        reqNivel: 2,
+        reqXp: 200,
+        requisitoTexto: 'Nivel 2 • 200 pts XP',
+        titulo: 'Neuroeducación y Movilidad Activa',
+        contenido:
+            'El aprendizaje de calidad (ODS 4) se potencia con la actividad física: 20 minutos de movilidad activa oxigenan el cerebro y mejoran la concentración y memoria hasta un 15%.',
+    },
+    {
+        id: 5,
+        ods: 4,
+        reqNivel: 3,
+        reqXp: 282,
+        requisitoTexto: 'Alcanzar Nivel 3 (282 pts XP)',
+        titulo: 'Efecto Multiplicador Estudiantil',
+        contenido:
+            'La meta 4.7 del ODS 4 destaca el liderazgo juvenil: un estudiante que comparte y practica hábitos sostenibles inspira en promedio a 4 personas de su entorno directo.',
+    },
+    {
+        id: 6,
+        ods: 4,
+        reqNivel: 4,
+        reqXp: 519,
+        requisitoTexto: 'Alcanzar Nivel 4 (519 pts XP)',
+        titulo: 'Saberes Ancestrales y Sumak Kawsay',
+        contenido:
+            'La educación intercultural del ODS 4 integra la ciencia ambiental moderna con el Sumak Kawsay andino: aprender a convivir en equilibrio y respeto con la Pacha Mama.',
+    },
+    {
+        id: 7,
+        ods: 4,
+        reqNivel: 5,
+        reqXp: 800,
+        requisitoTexto: 'Alcanzar Nivel 5 (800 pts XP)',
+        titulo: 'Maestría Kawsay en Educación Verde',
+        contenido:
+            '¡Has completado todas las cápsulas del ODS 4! Tu constancia demuestra que la educación de calidad transforma el conocimiento en acción real por el planeta.',
+    },
+];
+
+export function calcularIdsCuriosidadesDesbloqueadas(
+    nivel: number,
+    xp: number,
+    previos: number[] = [1]
+): number[] {
+    const setIds = new Set<number>([1, ...previos.filter((n) => Number.isInteger(n) && n > 0)]);
+    const niv = Math.max(1, Number(nivel || 1));
+    const puntos = Math.max(0, Number(xp || 0));
+
+    for (const item of CURIOSIDADES_ODS4_CATALOGO) {
+        if (niv >= item.reqNivel && puntos >= item.reqXp) {
+            setIds.add(item.id);
+        }
+    }
+    return Array.from(setIds).sort((a, b) => a - b);
+}
+
+export async function persistirCuriosidadesSupabase(ids: number[]): Promise<void> {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user?.id) return;
+        const limpios = Array.from(new Set([1, ...ids])).sort((a, b) => a - b);
+        await supabase
+            .from('usuarios')
+            .update({ curiosidades_desbloqueadas: limpios })
+            .eq('id', session.user.id);
+    } catch {
+        // Ignorar silenciosamente si la columna aún no fue migrada en el entorno remoto
+    }
+}
+
+export async function sincronizarPerfilYProgresoSupabase(
+    dashNombre?: string,
+    nivelActual: number = 1,
+    xpTotal: number = 0,
+    dashCuriosidades?: number[]
+): Promise<{
+    nombre: string;
+    apellido: string | null;
+    curiosidadesDesbloqueadas: number[];
+}> {
+    const desbloqueadosBase = calcularIdsCuriosidadesDesbloqueadas(
+        nivelActual,
+        xpTotal,
+        Array.isArray(dashCuriosidades) ? dashCuriosidades : [1]
+    );
+
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+            return {
+                nombre: dashNombre || 'Estudiante',
+                apellido: null,
+                curiosidadesDesbloqueadas: desbloqueadosBase,
+            };
+        }
+
+        const user = session.user;
+        const email = (user.email || '').trim();
+        const emailPrefix = email.includes('@') ? email.split('@')[0] : email;
+        const meta = (user.user_metadata || {}) as Record<string, unknown>;
+
+        let metaNombre = typeof meta.nombre === 'string' ? meta.nombre.trim() : '';
+        let metaApellido = typeof meta.apellido === 'string' ? meta.apellido.trim() : '';
+        const metaFullName = typeof meta.full_name === 'string' ? meta.full_name.trim() : '';
+
+        if (!metaNombre && metaFullName) {
+            const partes = metaFullName.split(/\s+/);
+            metaNombre = partes[0] || '';
+            if (!metaApellido && partes.length > 1) {
+                metaApellido = partes.slice(1).join(' ');
+            }
+        }
+
+        const { data: filaUsuario } = await supabase
+            .from('usuarios')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        const fila = (filaUsuario || {}) as Record<string, unknown>;
+        const dbNombre = typeof fila.nombre === 'string' ? fila.nombre.trim() : '';
+        const dbApellido = typeof fila.apellido === 'string' ? fila.apellido.trim() : '';
+        const dbCuriosidades = Array.isArray(fila.curiosidades_desbloqueadas)
+            ? (fila.curiosidades_desbloqueadas as unknown[])
+                  .map((x) => Number(x))
+                  .filter((n) => Number.isInteger(n) && n > 0)
+            : [];
+
+        let nombreResuelto = dbNombre;
+        if (metaNombre && (!dbNombre || dbNombre === emailPrefix || dbNombre === 'Estudiante')) {
+            nombreResuelto = metaNombre;
+        }
+        if (!nombreResuelto) {
+            const candidatoDash = (dashNombre || '').trim();
+            if (candidatoDash && candidatoDash !== 'Estudiante') {
+                nombreResuelto = candidatoDash;
+            } else {
+                nombreResuelto = metaNombre || emailPrefix || email || 'Estudiante';
+            }
+        }
+
+        const apellidoResuelto = dbApellido || metaApellido || null;
+        const curiosidadesFinales = calcularIdsCuriosidadesDesbloqueadas(
+            nivelActual,
+            xpTotal,
+            [...desbloqueadosBase, ...dbCuriosidades]
+        );
+
+        const payloadSync: Record<string, unknown> = {};
+        if (metaNombre && dbNombre !== nombreResuelto) {
+            payloadSync.nombre = nombreResuelto;
+        }
+        if (metaApellido && !dbApellido) {
+            payloadSync.apellido = metaApellido;
+        }
+        const cambioCuriosidades =
+            dbCuriosidades.length !== curiosidadesFinales.length ||
+            curiosidadesFinales.some((val, idx) => dbCuriosidades[idx] !== val);
+        if (cambioCuriosidades) {
+            payloadSync.curiosidades_desbloqueadas = curiosidadesFinales;
+        }
+
+        if (Object.keys(payloadSync).length > 0) {
+            await supabase.from('usuarios').update(payloadSync).eq('id', user.id);
+        }
+
+        return {
+            nombre: nombreResuelto,
+            apellido: apellidoResuelto,
+            curiosidadesDesbloqueadas: curiosidadesFinales,
+        };
+    } catch {
+        return {
+            nombre: dashNombre || 'Estudiante',
+            apellido: null,
+            curiosidadesDesbloqueadas: desbloqueadosBase,
+        };
+    }
+}
+

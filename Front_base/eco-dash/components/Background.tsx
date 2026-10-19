@@ -54,16 +54,23 @@ export default function Background() {
         @keyframes latidoPlaneta { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         .animar-latido-planeta { animation: latidoPlaneta 2s ease-in-out infinite; }
 
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #ffffff; cursor: pointer; margin-top: -10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.1s; }
+        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; min-height: 44px; background: transparent; touch-action: pan-y; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 28px; width: 28px; border-radius: 50%; background: #ffffff; cursor: pointer; margin-top: -10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.1s; }
         input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; border-radius: 3px; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; border-radius: 4px; }
+        input[type=range]::-moz-range-thumb { height: 28px; width: 28px; border-radius: 50%; background: #ffffff; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        input[type=range]::-moz-range-track { width: 100%; height: 8px; cursor: pointer; border-radius: 4px; }
         .slider-clima::-webkit-slider-runnable-track { background: #10b981; }
         .slider-clima::-webkit-slider-thumb { border: 3px solid #059669; }
+        .slider-clima::-moz-range-track { background: #10b981; }
+        .slider-clima::-moz-range-thumb { border: 3px solid #059669; }
         .slider-salud::-webkit-slider-runnable-track { background: #f97316; }
         .slider-salud::-webkit-slider-thumb { border: 3px solid #ea580c; }
+        .slider-salud::-moz-range-track { background: #f97316; }
+        .slider-salud::-moz-range-thumb { border: 3px solid #ea580c; }
       
       `}</style>
+
     </>
   );
 }

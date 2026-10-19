@@ -1,12 +1,20 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List
-import random
 
 from app.core.database import supabase
 from app.core.security import get_current_user
 from app.schemas.accion import AccionRegistrar, AccionRespuesta, TransaccionInfo, EstadoUsuario, RecompensaEducativa
 
 router = APIRouter(prefix="/api/v1/acciones", tags=["Acciones e Impacto"])
+
+UMBRALES_CURIOSIDADES_ODS4 = [
+    (1, 1, 0),
+    (2, 1, 50),
+    (3, 2, 100),
+    (4, 2, 200),
+    (5, 3, 282),
+    (6, 4, 519),
+    (7, 5, 800),
+]
 
 @router.get("/", summary="Lista todas las acciones ambientales disponibles")
 def obtener_catalogo_acciones():
@@ -42,27 +50,28 @@ def registrar_accion(datos: AccionRegistrar, current_user = Depends(get_current_
         if not data or data.get("status") != "success":
             raise HTTPException(status_code=400, detail="Error en la base de datos al registrar la acción.")
 
-        # Obtener ODS para la recompensa educativa
-        ods_asociado = data.get("ods_info", {}).get("ods", 13)
-        nivel_actual = data.get("estado_usuario", {}).get("nivel_actual", 1)
-        
-        # Buscar recompensa educativa (ODS 4)
-        leccion_db = supabase.table("catalogo_educativo").select("*").eq("ods", ods_asociado).lte("nivel_desbloqueo", nivel_actual).execute()
-        recompensa = None
-        
-        if leccion_db.data:
-            leccion = random.choice(leccion_db.data)
-            recompensa = RecompensaEducativa(
-                ods=leccion["ods"],
-                titulo=leccion["titulo"],
-                contenido=leccion["contenido"]
-            )
+        estado_usr = data.get("estado_usuario", {})
+        nivel_actual = int(estado_usr.get("nivel_actual", 1))
+        xp_total = int(estado_usr.get("xp_total", 0))
+
+        # Persistir desbloqueos progresivos de ODS 4 en la tabla usuarios
+        desbloqueados = [
+            cid for cid, req_niv, req_xp in UMBRALES_CURIOSIDADES_ODS4
+            if nivel_actual >= req_niv and xp_total >= req_xp
+        ]
+        try:
+            supabase.table("usuarios").update(
+                {"curiosidades_desbloqueadas": desbloqueados}
+            ).eq("id", current_user.id).execute()
+        except Exception:
+            pass
 
         return AccionRespuesta(
             transaccion=TransaccionInfo(**data["transaccion"]),
             estado_usuario=EstadoUsuario(**data["estado_usuario"]),
-            recompensa_educativa=recompensa
+            recompensa_educativa=None
         )
+
 
     except HTTPException:
         raise

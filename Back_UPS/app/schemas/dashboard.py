@@ -29,12 +29,15 @@ class RachaDiaResumen(BaseModel):
 # Modelo principal del Dashboard
 class DashboardResumen(BaseModel):
     nombre_usuario: str
+    apellido_usuario: Optional[str] = None
     nivel_actual: int
     xp_total: int
     racha_dias: int
     fecha_ultimo_registro: Optional[str] = None
     impacto_global_co2: float
     impacto_global_calorias: float
+    curiosidades_desbloqueadas: List[int] = [1]
     desglose_grafico: List[GraficoCategoria] = []
     historial: List[HistorialItem] = []
-    desglose_racha: List[RachaDiaResumen] = []
+    desglose_racha: List[RachaDiaResumen] = []
+
