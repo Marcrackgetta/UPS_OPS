@@ -544,30 +544,30 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </div>
 
             {/* Lista Progresiva Estilo Videojuego */}
-            <div className="p-4 sm:p-6 overflow-y-auto scrollbar-hide flex flex-col gap-3.5 sm:gap-4 pb-6 sm:pb-6">
+            <div className="flex-1 min-h-0 p-4 sm:p-6 overflow-y-auto scrollbar-hide flex flex-col gap-4 sm:gap-5 pb-6 sm:pb-8">
               {curiosidadesOds.map((item) =>
                 item.desbloqueado ? (
                   <div
                     key={item.id}
-                    className="relative bg-white/95 rounded-2xl p-4 sm:p-5 border-2 border-amber-300 shadow-md transition-all"
+                    className="shrink-0 relative bg-white/95 rounded-2xl p-4 sm:p-5 md:p-6 border-2 border-amber-300 shadow-md transition-all"
                   >
-                    <div className="flex items-start gap-3.5">
-                      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-emerald-400 to-green-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <div className="flex items-start gap-3.5 sm:gap-4">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                         <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-                          <span className="text-[11px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                      <div className="min-w-0 flex-1 flex flex-col gap-1.5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2">
+                          <span className="w-fit text-[11px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-full border border-emerald-200 leading-none">
                             Cápsula #{item.id} • ODS 4 Desbloqueada
                           </span>
-                          <span className="text-[11px] font-bold text-amber-700">
+                          <span className="w-fit text-[11px] font-extrabold text-amber-800 bg-amber-100/80 px-2.5 py-1 rounded-full border border-amber-200/80 leading-none">
                             {item.requisitoTexto}
                           </span>
                         </div>
-                        <h3 className="font-black text-stone-800 text-base sm:text-lg leading-snug break-words">
+                        <h3 className="font-black text-stone-800 text-base sm:text-lg leading-snug break-words mt-0.5">
                           {item.titulo}
                         </h3>
-                        <p className="text-stone-700 font-medium text-xs sm:text-sm leading-relaxed mt-1.5 break-words">
+                        <p className="text-stone-600 font-medium text-xs sm:text-sm leading-relaxed break-words">
                           {item.contenido}
                         </p>
                       </div>
@@ -576,35 +576,48 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
                 ) : (
                   <div
                     key={item.id}
-                    className="relative bg-stone-900/90 text-stone-300 rounded-2xl p-4 sm:p-5 border-2 border-stone-700/80 shadow-inner overflow-hidden"
+                    className="shrink-0 relative bg-stone-900/95 text-stone-200 rounded-2xl p-4 sm:p-5 md:p-6 border border-stone-700/90 shadow-md"
                   >
-                    <div className="flex items-start gap-3.5">
-                      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-stone-800 border border-stone-600 text-amber-400 flex items-center justify-center shrink-0 shadow-inner">
+                    <div className="flex items-start gap-3.5 sm:gap-4">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-stone-800/90 border border-stone-600/80 text-amber-400 flex items-center justify-center shrink-0 shadow-inner mt-0.5">
                         <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-                          <span className="text-[11px] font-black uppercase tracking-widest text-stone-300 bg-stone-800 px-2.5 py-0.5 rounded-full border border-stone-600">
+                      <div className="min-w-0 flex-1 flex flex-col gap-2">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2">
+                          <span className="w-fit text-[11px] font-black uppercase tracking-wider text-stone-300 bg-stone-800 px-2.5 py-1 rounded-full border border-stone-600/80 leading-none">
                             Cápsula #{item.id} • ODS 4 Bloqueada
                           </span>
-                          <span className="text-[11px] font-black text-amber-300 bg-amber-500/15 border border-amber-400/30 px-2.5 py-0.5 rounded-full">
+                          <span className="w-fit text-[11px] font-bold text-amber-300 bg-amber-500/15 border border-amber-400/30 px-2.5 py-1 rounded-full leading-none">
                             Requisito: {item.requisitoTexto}
                           </span>
                         </div>
-                        <h3 className="font-black text-stone-400 text-base sm:text-lg leading-snug select-none">
-                          ??? • Conocimiento Sostenible Oculto
-                        </h3>
-                        <p className="text-stone-400/80 text-xs sm:text-sm mt-1 leading-relaxed">
-                          Suma puntos registrando acciones ecológicas para desbloquear esta cápsula de Educación de Calidad (ODS 4).
-                          {item.xpFaltante > 0
-                            ? ` Te faltan ${item.xpFaltante} pts XP.`
-                            : ` Requiere alcanzar el Nivel ${item.reqNivel}.`}
-                        </p>
-                        <div className="mt-3 w-full bg-stone-800 rounded-full h-2 overflow-hidden border border-stone-700">
-                          <div
-                            className="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full transition-all duration-500"
-                            style={{ width: `${item.progresoPct}%` }}
-                          />
+
+                        <div className="space-y-1">
+                          <h3 className="font-extrabold text-stone-200 text-sm sm:text-base md:text-lg leading-snug select-none break-words">
+                            ??? • Conocimiento Sostenible Oculto
+                          </h3>
+                          <p className="text-stone-400 text-xs sm:text-sm leading-relaxed break-words">
+                            Suma puntos registrando acciones ecológicas para desbloquear esta cápsula de Educación de Calidad (ODS 4).
+                          </p>
+                        </div>
+
+                        <div className="mt-1 pt-2.5 border-t border-stone-800 flex flex-col gap-1.5">
+                          <div className="flex items-center justify-between gap-2 text-[11px] font-bold">
+                            <span className="text-stone-400 uppercase tracking-wider">
+                              Progreso de desbloqueo ({item.progresoPct}%)
+                            </span>
+                            <span className="text-amber-300">
+                              {item.xpFaltante > 0
+                                ? `Faltan ${item.xpFaltante} pts XP`
+                                : `Requiere Nivel ${item.reqNivel}`}
+                            </span>
+                          </div>
+                          <div className="w-full bg-stone-800 rounded-full h-2 overflow-hidden border border-stone-700/80">
+                            <div
+                              className="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full transition-all duration-500"
+                              style={{ width: `${item.progresoPct}%` }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -614,6 +627,7 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </div>
           </div>
         </div>
+
       )}
 
       {/* MODAL 2: IMPACTO AMBIENTAL REAL */}

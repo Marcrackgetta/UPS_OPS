@@ -50,6 +50,7 @@ Desktop.ini
 *.avi
 *.doc
 *.docx
+*.pdf
 /clean_imports.py
 /docs/docx_texts.txt
 /docs/generate_doc.py
