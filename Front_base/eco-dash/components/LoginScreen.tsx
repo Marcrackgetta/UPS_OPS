@@ -371,7 +371,13 @@ export default function LoginScreen() {
                 <div>
                   <p className="font-black text-stone-800">Google Gemini</p>
                   <p className="text-stone-600 text-xs leading-relaxed">
-                    Asistencia consultiva externa (vía chat) para la conceptualización de componentes de interfaz con Tailwind CSS, consulta de buenas prácticas en tipado y generación de plantillas base para pruebas unitarias con Pytest.
+                    Asistencia consultiva para diseño de prompts, ideación de experiencia de usuario (UX/UI), estructuración de métricas ODS y auditoría de cumplimiento reglamentario.
+                  </p>
+                </div>
+                <div>
+                  <p className="font-black text-stone-800">Suno AI</p>
+                  <p className="text-stone-600 text-xs leading-relaxed">
+                    Generación de las 4 pistas instrumentales de ambientación (Musica1–4.ogg) mediante inteligencia artificial generativa, garantizando música original y libre de derechos de autor de terceros.
                   </p>
                 </div>
               </div>
