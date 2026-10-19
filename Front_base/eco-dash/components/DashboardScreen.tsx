@@ -281,48 +281,6 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [anyModalOpen, showVictoryModal]);
 
-  const categoryBreakdown = useMemo(() => {
-    const palette: Record<string, { label: string; color: string; barClass: string }> = {
-      TRANSPORTE: { label: 'Movilidad Sostenible', color: '#10b981', barClass: 'from-emerald-400 to-green-600' },
-      MOVILIDAD: { label: 'Movilidad Sostenible', color: '#10b981', barClass: 'from-emerald-400 to-green-600' },
-      ENERGIA: { label: 'Ahorro de Energía', color: '#f59e0b', barClass: 'from-amber-400 to-orange-500' },
-      RESIDUOS: { label: 'Reciclaje y Residuos', color: '#14b8a6', barClass: 'from-teal-400 to-emerald-500' },
-      RECICLAJE: { label: 'Reciclaje y Residuos', color: '#14b8a6', barClass: 'from-teal-400 to-emerald-500' },
-      AGUA: { label: 'Cuidado del Agua', color: '#06b6d4', barClass: 'from-cyan-400 to-teal-500' },
-      ALIMENTACION: { label: 'Alimentación Consciente', color: '#84cc16', barClass: 'from-lime-400 to-green-500' },
-      SALUD: { label: 'Salud y Bienestar', color: '#f97316', barClass: 'from-orange-400 to-rose-500' },
-      CLIMA: { label: 'Acción por el Clima', color: '#22c55e', barClass: 'from-green-400 to-emerald-600' },
-    };
-    const defaultColors = ['#10b981', '#f59e0b', '#14b8a6', '#06b6d4', '#84cc16', '#f97316'];
-
-    const rawList = Array.isArray(dashboard?.desglose_grafico) ? dashboard.desglose_grafico : [];
-    const items = rawList
-      .map((item, idx) => {
-        const key = String(item.categoria || 'CLIMA').toUpperCase();
-        const val = Number(Number(item.total_co2_kg || 0).toFixed(2));
-        const meta = palette[key] || {
-          label: key.charAt(0) + key.slice(1).toLowerCase(),
-          color: defaultColors[idx % defaultColors.length],
-          barClass: 'from-emerald-400 to-green-600',
-        };
-        return {
-          categoria: key,
-          label: meta.label,
-          total_co2_kg: val,
-          color: meta.color,
-          barClass: meta.barClass,
-        };
-      })
-      .filter((x) => x.total_co2_kg > 0)
-      .sort((a, b) => b.total_co2_kg - a.total_co2_kg);
-
-    const totalCo2Categorias = items.reduce((acc, cur) => acc + cur.total_co2_kg, 0);
-    return items.map((item) => ({
-      ...item,
-      pct: totalCo2Categorias > 0 ? Math.round((item.total_co2_kg / totalCo2Categorias) * 100) : 0,
-    }));
-  }, [dashboard]);
-
   const onSelectAction = async (accion_id: number) => {
     if (submittingId !== null) return;
     setSubmittingId(accion_id);
@@ -577,233 +535,95 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         </div>
 
 
-        {/* GRILLA PRINCIPAL */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 relative">
-          <div className="lg:col-span-2 h-full">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 h-full">
-              {/* TARJETA ODS 13: CO2 */}
-              <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-green-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
-                <div>
-                  <div className="flex justify-between items-start mb-5 sm:mb-6">
-                    <div className="bg-gradient-to-br from-green-100 to-green-200 p-3.5 sm:p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
-                      <AnimatedWindIcon className="w-6 h-6 md:w-8 md:h-8 text-green-700" />
-                    </div>
-                    <span className="text-green-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-green-200 shadow-sm">
-                      ODS 13
-                    </span>
-                  </div>
-                  <h3 className="text-stone-500 font-bold uppercase tracking-wider text-xs mb-1">CO2 Evitado Hoy</h3>
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-4xl sm:text-5xl font-black text-stone-800 tracking-tighter">{dailyCo2}</span>
-                    <span className="text-stone-500 font-bold">kg</span>
-                  </div>
-                  <p className="text-[11px] text-stone-400 font-bold mb-3">
-                    Acumulado histórico: {co2} kg
-                  </p>
-                  <div className="w-full bg-stone-200/50 rounded-full h-4 mb-2 overflow-hidden shadow-inner border border-stone-200/50">
-                    <div
-                      className="bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(52,211,153,0.8)] relative"
-                      style={{ width: `${co2Percent}%` }}
-                    >
-                      <div className="absolute inset-0 bg-white/30 w-full h-full animate-[pulse_2s_ease-in-out_infinite]"></div>
-                    </div>
-                  </div>
+        {/* GRILLA PRINCIPAL: ODS 13 Y ODS 3 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 relative">
+          {/* TARJETA ODS 13: CO2 */}
+          <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-green-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
+            <div>
+              <div className="flex justify-between items-start mb-5 sm:mb-6">
+                <div className="bg-gradient-to-br from-green-100 to-green-200 p-3.5 sm:p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
+                  <AnimatedWindIcon className="w-6 h-6 md:w-8 md:h-8 text-green-700" />
                 </div>
-
-                {dailyCo2 >= goalCo2 ? (
-                  <div className="mt-3 bg-green-100/90 border border-green-300 px-4 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-2 animate-in zoom-in duration-300">
-                    <Sparkles className="w-4 h-4 text-green-600 animate-pulse shrink-0" />
-                    <span className="text-green-700 font-black text-xs uppercase tracking-widest">
-                      ¡Ya alcanzaste tu meta de hoy!
-                    </span>
-                  </div>
-                ) : (
-                  <p className="text-xs text-stone-500 font-bold flex justify-between uppercase tracking-wide mt-3 px-1">
-                    <span>Progreso diario</span>
-                    <span>Meta: {goalCo2} kg</span>
-                  </p>
-                )}
+                <span className="text-green-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-green-200 shadow-sm">
+                  ODS 13
+                </span>
               </div>
-
-              {/* TARJETA ODS 3: CALORÍAS */}
-              <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
-                <div>
-                  <div className="flex justify-between items-start mb-5 sm:mb-6">
-                    <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-3.5 sm:p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
-                      <AnimatedHeartIcon className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
-                    </div>
-                    <span className="text-orange-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-orange-200 shadow-sm">
-                      ODS 3
-                    </span>
-                  </div>
-                  <h3 className="text-stone-500 font-bold uppercase tracking-wider text-xs mb-1">Calorías Quemadas Hoy</h3>
-                  <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-4xl sm:text-5xl font-black text-stone-800 tracking-tighter">{dailyCal}</span>
-                    <span className="text-stone-500 font-bold">kcal</span>
-                  </div>
-                  <p className="text-[11px] text-stone-400 font-bold mb-3">
-                    Acumulado histórico: {calories} kcal
-                  </p>
-                  <div className="w-full bg-stone-200/50 rounded-full h-4 mb-2 overflow-hidden shadow-inner border border-stone-200/50">
-                    <div
-                      className="bg-gradient-to-r from-orange-400 to-rose-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(251,146,60,0.8)] relative"
-                      style={{ width: `${calPercent}%` }}
-                    >
-                      <div className="absolute inset-0 bg-white/30 w-full h-full animate-[pulse_2s_ease-in-out_infinite]"></div>
-                    </div>
-                  </div>
+              <h3 className="text-stone-500 font-bold uppercase tracking-wider text-xs mb-1">CO2 Evitado Hoy</h3>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl sm:text-5xl font-black text-stone-800 tracking-tighter">{dailyCo2}</span>
+                <span className="text-stone-500 font-bold">kg</span>
+              </div>
+              <p className="text-[11px] text-stone-400 font-bold mb-3">
+                Acumulado histórico: {co2} kg
+              </p>
+              <div className="w-full bg-stone-200/50 rounded-full h-4 mb-2 overflow-hidden shadow-inner border border-stone-200/50">
+                <div
+                  className="bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(52,211,153,0.8)] relative"
+                  style={{ width: `${co2Percent}%` }}
+                >
+                  <div className="absolute inset-0 bg-white/30 w-full h-full animate-[pulse_2s_ease-in-out_infinite]"></div>
                 </div>
-
-                {dailyCal >= goalCalories ? (
-                  <div className="mt-3 bg-orange-100/90 border border-orange-300 px-4 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-2 animate-in zoom-in duration-300">
-                    <Flame className="w-4 h-4 text-orange-600 animate-pulse shrink-0" />
-                    <span className="text-orange-700 font-black text-xs uppercase tracking-widest">
-                      ¡Ya alcanzaste tu meta de hoy!
-                    </span>
-                  </div>
-                ) : (
-                  <p className="text-xs text-stone-500 font-bold flex justify-between uppercase tracking-wide mt-3 px-1">
-                    <span>Progreso diario</span>
-                    <span>Meta: {goalCalories} kcal</span>
-                  </p>
-                )}
               </div>
             </div>
+
+            {dailyCo2 >= goalCo2 ? (
+              <div className="mt-3 bg-green-100/90 border border-green-300 px-4 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-2 animate-in zoom-in duration-300">
+                <Sparkles className="w-4 h-4 text-green-600 animate-pulse shrink-0" />
+                <span className="text-green-700 font-black text-xs uppercase tracking-widest">
+                  ¡Ya alcanzaste tu meta de hoy!
+                </span>
+              </div>
+            ) : (
+              <p className="text-xs text-stone-500 font-bold flex justify-between uppercase tracking-wide mt-3 px-1">
+                <span>Progreso diario</span>
+                <span>Meta: {goalCo2} kg</span>
+              </p>
+            )}
           </div>
 
-          {/* TERCERA COLUMNA: IMPACTO Y ACCIONES SECUNDARIAS */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:flex lg:flex-col gap-5 md:gap-6">
-            <button
-              onClick={() => setShowImpactModal(true)}
-              className="bg-gradient-to-br from-green-800 to-emerald-950 p-6 sm:p-8 rounded-[2rem] border border-green-700/50 shadow-2xl shadow-black/20 text-left hover:scale-[1.02] transition-all group overflow-hidden relative cursor-pointer"
-            >
-              <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors"></div>
-              <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-green-500 opacity-20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
-              <div className="relative z-10 flex flex-col h-full justify-between gap-4">
-                <div className="flex items-center justify-between">
-                  <Globe className="w-9 h-9 sm:w-10 sm:h-10 text-green-400 group-hover:rotate-12 transition-transform duration-500" />
-                  <Sparkles className="w-5 h-5 text-yellow-500 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity" />
+          {/* TARJETA ODS 3: CALORÍAS */}
+          <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
+            <div>
+              <div className="flex justify-between items-start mb-5 sm:mb-6">
+                <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-3.5 sm:p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
+                  <AnimatedHeartIcon className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
                 </div>
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-black text-white leading-tight mb-2">
-                    Impacto
-                    <br />
-                    Ambiental Real
-                  </h2>
-                  <p className="text-green-200/80 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                    Ver equivalencias <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
-                  </p>
+                <span className="text-orange-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-orange-200 shadow-sm">
+                  ODS 3
+                </span>
+              </div>
+              <h3 className="text-stone-500 font-bold uppercase tracking-wider text-xs mb-1">Calorías Quemadas Hoy</h3>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl sm:text-5xl font-black text-stone-800 tracking-tighter">{dailyCal}</span>
+                <span className="text-stone-500 font-bold">kcal</span>
+              </div>
+              <p className="text-[11px] text-stone-400 font-bold mb-3">
+                Acumulado histórico: {calories} kcal
+              </p>
+              <div className="w-full bg-stone-200/50 rounded-full h-4 mb-2 overflow-hidden shadow-inner border border-stone-200/50">
+                <div
+                  className="bg-gradient-to-r from-orange-400 to-rose-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(251,146,60,0.8)] relative"
+                  style={{ width: `${calPercent}%` }}
+                >
+                  <div className="absolute inset-0 bg-white/30 w-full h-full animate-[pulse_2s_ease-in-out_infinite]"></div>
                 </div>
               </div>
-            </button>
-
-            <div className="mt-auto flex flex-col justify-center gap-3.5 h-full lg:h-auto">
-              <button
-                onClick={() => setShowHistoryModal(true)}
-                className="w-full min-h-[48px] py-3.5 sm:py-4 px-4 rounded-2xl bg-white/20 backdrop-blur-xl border border-white/40 hover:bg-white/90 text-white hover:text-stone-800 font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-[0_10px_30px_rgba(0,0,0,0.2)] active:scale-95 cursor-pointer"
-              >
-                <CalendarDays className="w-5 h-5 shrink-0" />
-                <span>Ver todo mi historial</span>
-              </button>
-              <button
-                onClick={() => setShowCuriositiesModal(true)}
-                className="w-full min-h-[48px] py-3.5 sm:py-4 px-4 rounded-2xl bg-yellow-400/20 backdrop-blur-xl border border-yellow-400/40 hover:bg-yellow-400 text-yellow-100 hover:text-yellow-950 font-black uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2.5 sm:gap-3 shadow-lg hover:shadow-[0_10px_30px_rgba(253,224,71,0.3)] active:scale-95 cursor-pointer"
-              >
-                <Sparkles className="w-5 h-5 shrink-0" />
-                <span>Curiosidades ODS ({desbloqueadasCount}/{curiosidadesOds.length})</span>
-              </button>
             </div>
+
+            {dailyCal >= goalCalories ? (
+              <div className="mt-3 bg-orange-100/90 border border-orange-300 px-4 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-2 animate-in zoom-in duration-300">
+                <Flame className="w-4 h-4 text-orange-600 animate-pulse shrink-0" />
+                <span className="text-orange-700 font-black text-xs uppercase tracking-widest">
+                  ¡Ya alcanzaste tu meta de hoy!
+                </span>
+              </div>
+            ) : (
+              <p className="text-xs text-stone-500 font-bold flex justify-between uppercase tracking-wide mt-3 px-1">
+                <span>Progreso diario</span>
+                <span>Meta: {goalCalories} kcal</span>
+              </p>
+            )}
           </div>
-        </div>
-
-        {/* DESGLOSE POR CATEGORÍAS (GRÁFICO DE ANILLO SVG + BARRAS) */}
-        <div className="mt-6 md:mt-8 bg-white/80 backdrop-blur-2xl p-4 sm:p-7 rounded-3xl sm:rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl font-black text-stone-800 flex items-center gap-2">
-              <Activity className="w-6 h-6 text-emerald-600 shrink-0" /> Desglose de Impacto por Categoría (ODS 13)
-            </h2>
-            <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-200 w-fit">
-              Total acumulado: {co2} kg CO2
-            </span>
-          </div>
-
-          {categoryBreakdown.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-              {/* Anillo SVG (Donut Chart) */}
-              <div className="md:col-span-4 flex flex-col items-center justify-center">
-                <div className="relative w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center">
-                  <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90 drop-shadow-sm" role="img" aria-label="Gráfico de anillo de CO2 evitado por categoría">
-                    <circle
-                      cx="18"
-                      cy="18"
-                      r="15.9155"
-                      fill="transparent"
-                      stroke="#e7e5e4"
-                      strokeWidth="3.8"
-                    />
-                    {(() => {
-                      let accumulatedPct = 0;
-                      return categoryBreakdown.map((cat) => {
-                        const dashArray = `${cat.pct} ${Math.max(0, 100 - cat.pct)}`;
-                        const dashOffset = 100 - accumulatedPct;
-                        accumulatedPct += cat.pct;
-                        return (
-                          <circle
-                            key={cat.categoria}
-                            cx="18"
-                            cy="18"
-                            r="15.9155"
-                            fill="transparent"
-                            stroke={cat.color}
-                            strokeWidth="3.8"
-                            strokeDasharray={dashArray}
-                            strokeDashoffset={dashOffset}
-                            strokeLinecap="butt"
-                          />
-                        );
-                      });
-                    })()}
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-2">
-                    <span className="text-xl sm:text-2xl font-black text-stone-800 leading-none">{co2}</span>
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-stone-500 mt-1">
-                      kg CO2
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Barras de progreso por categoría */}
-              <div className="md:col-span-8 flex flex-col gap-3.5">
-                {categoryBreakdown.map((cat) => (
-                  <div key={cat.categoria} className="bg-white/90 p-3.5 rounded-2xl border border-stone-200/80 shadow-sm">
-                    <div className="flex items-center justify-between gap-2 text-xs sm:text-sm mb-1.5">
-                      <span className="font-black text-stone-800 flex items-center gap-2">
-                        <span
-                          className="w-3 h-3 rounded-full shrink-0"
-                          style={{ backgroundColor: cat.color }}
-                        />
-                        {cat.label}
-                      </span>
-                      <span className="font-extrabold text-stone-600">
-                        {cat.total_co2_kg} kg CO2 ({cat.pct}%)
-                      </span>
-                    </div>
-                    <div className="w-full bg-stone-200/60 rounded-full h-2.5 overflow-hidden">
-                      <div
-                        className={`bg-gradient-to-r ${cat.barClass} h-full rounded-full transition-all duration-700`}
-                        style={{ width: `${Math.max(4, cat.pct)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="bg-stone-50/80 border border-stone-200/80 rounded-2xl p-5 text-center text-stone-500 text-xs sm:text-sm font-bold">
-              Siembra tu primera acción ecológica en el catálogo inferior para visualizar tu distribución de impacto por categoría.
-            </div>
-          )}
         </div>
 
         {/* SECCIÓN INFERIOR: CATÁLOGO (SIEMBRA UNA ACCIÓN) */}
@@ -1429,25 +1249,15 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
         </div>
       )}
 
-      {/* PIE DE PÁGINA: CRÉDITOS Y TRANSPARENCIA IA */}
+      {/* PIE DE PÁGINA: CRÉDITOS INSTITUCIONALES */}
       <footer className="relative z-10 max-w-6xl w-full mx-auto pt-2 pb-4 text-emerald-100/85 text-xs">
-        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl px-4 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg">
-          <div className="text-center sm:text-left">
-            <p className="font-bold text-white">
-              Academia Naval Almirante Illingworth • Concurso Intercolegial &ldquo;Multimedia Teens 2026&rdquo; (UPS)
-            </p>
-            <p className="text-[11px] text-emerald-200/80 mt-0.5">
-              Integrantes: Jordán Maridueña Joel Alexander, Nieto Martillo Melissa Dakota, Narváez Durán Francisco Isaías, Zambrano Aguirre Marcelo Humberto • Docente Tutor: Ing. Joel Anthony Torres Urresto
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowCreditsModal(true)}
-            className="min-h-[40px] px-4 py-2 rounded-xl bg-emerald-500/25 hover:bg-emerald-500/40 border border-emerald-300/30 text-white font-bold text-xs inline-flex items-center gap-2 shrink-0 transition-all cursor-pointer"
-          >
-            <Info className="w-4 h-4 text-emerald-300 shrink-0" />
-            <span>Créditos y Declaración IA</span>
-          </button>
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl px-4 py-3.5 text-center shadow-lg">
+          <p className="font-bold text-white">
+            Academia Naval Almirante Illingworth • Concurso Intercolegial &ldquo;Multimedia Teens 2026&rdquo; (UPS)
+          </p>
+          <p className="text-[11px] text-emerald-200/80 mt-0.5">
+            Integrantes: Jordán Maridueña Joel Alexander, Nieto Martillo Melissa Dakota, Narváez Durán Francisco Isaías, Zambrano Aguirre Marcelo Humberto • Docente Tutor: Ing. Joel Anthony Torres Urresto
+          </p>
         </div>
       </footer>
 

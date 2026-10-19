@@ -50,7 +50,6 @@ export interface DashboardData {
   impacto_global_co2: number;
   impacto_global_calorias: number;
   curiosidades_desbloqueadas?: number[];
-  desglose_grafico?: Array<{ categoria: string; total_co2_kg: number }>;
   historial?: Array<Record<string, unknown>>;
   desglose_racha?: RachaDiaItem[];
 }
@@ -214,30 +213,6 @@ export function useDashboard() {
           ].slice(0, Math.max(nuevaRacha, 1));
         }
 
-        const catAccion = String(accionInfo?.categoria || 'CLIMA').toUpperCase();
-        const graficoPrevio = Array.isArray(prev.desglose_grafico) ? [...prev.desglose_grafico] : [];
-        let nuevoDesgloseGrafico = graficoPrevio;
-        if (co2Ganado > 0) {
-          const idxCat = graficoPrevio.findIndex(
-            (g) => String(g.categoria || '').toUpperCase() === catAccion
-          );
-          if (idxCat >= 0) {
-            nuevoDesgloseGrafico = graficoPrevio.map((g, i) =>
-              i === idxCat
-                ? {
-                    ...g,
-                    total_co2_kg: Number((Number(g.total_co2_kg || 0) + co2Ganado).toFixed(3)),
-                  }
-                : g
-            );
-          } else {
-            nuevoDesgloseGrafico = [
-              ...graficoPrevio,
-              { categoria: catAccion, total_co2_kg: Number(co2Ganado.toFixed(3)) },
-            ];
-          }
-        }
-
         return {
           ...prev,
           impacto_global_co2: Number((Number(prev.impacto_global_co2 || 0) + co2Ganado).toFixed(3)),
@@ -248,7 +223,6 @@ export function useDashboard() {
           fecha_ultimo_registro: fechaHoy,
           curiosidades_desbloqueadas: nuevosDesbloqueados,
           desglose_racha: nuevoDesgloseRacha,
-          desglose_grafico: nuevoDesgloseGrafico,
         };
       });
 
