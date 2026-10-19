@@ -536,27 +536,31 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
 
 
         {/* GRILLA PRINCIPAL: ODS 13 Y ODS 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 relative">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 md:gap-8 relative">
           {/* TARJETA ODS 13: CO2 */}
-          <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-green-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
-            <div>
-              <div className="flex justify-between items-start mb-5 sm:mb-6">
-                <div className="bg-gradient-to-br from-green-100 to-green-200 p-3.5 sm:p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
-                  <AnimatedWindIcon className="w-6 h-6 md:w-8 md:h-8 text-green-700" />
+          <div className="min-w-0 bg-white/80 backdrop-blur-2xl p-3.5 sm:p-7 rounded-2xl sm:rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-green-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
+            <div className="min-w-0">
+              <div className="flex justify-between items-start gap-1.5 mb-3 sm:mb-6">
+                <div className="bg-gradient-to-br from-green-100 to-green-200 p-2 sm:p-4 rounded-xl sm:rounded-2xl shadow-inner transition-transform duration-300 border border-white shrink-0">
+                  <AnimatedWindIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-green-700" />
                 </div>
-                <span className="text-green-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-green-200 shadow-sm">
+                <span className="text-green-700 font-black bg-white px-2 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs tracking-wider sm:tracking-widest uppercase border border-green-200 shadow-sm shrink-0">
                   ODS 13
                 </span>
               </div>
-              <h3 className="text-stone-500 font-bold uppercase tracking-wider text-xs mb-1">CO2 Evitado Hoy</h3>
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-4xl sm:text-5xl font-black text-stone-800 tracking-tighter">{dailyCo2}</span>
-                <span className="text-stone-500 font-bold">kg</span>
+              <h3 className="text-stone-500 font-bold uppercase tracking-wide sm:tracking-wider text-[10px] sm:text-xs mb-1 leading-tight break-words">
+                CO2 Evitado Hoy
+              </h3>
+              <div className="flex flex-wrap items-baseline gap-1 mb-1 min-w-0">
+                <span className="text-2xl sm:text-5xl font-black text-stone-800 tracking-tighter leading-none truncate">
+                  {dailyCo2}
+                </span>
+                <span className="text-xs sm:text-base text-stone-500 font-bold">kg</span>
               </div>
-              <p className="text-[11px] text-stone-400 font-bold mb-3">
+              <p className="text-[10px] sm:text-[11px] text-stone-400 font-bold mb-2 sm:mb-3 leading-tight break-words">
                 Acumulado histórico: {co2} kg
               </p>
-              <div className="w-full bg-stone-200/50 rounded-full h-4 mb-2 overflow-hidden shadow-inner border border-stone-200/50">
+              <div className="w-full bg-stone-200/50 rounded-full h-2.5 sm:h-4 mb-1.5 sm:mb-2 overflow-hidden shadow-inner border border-stone-200/50">
                 <div
                   className="bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(52,211,153,0.8)] relative"
                   style={{ width: `${co2Percent}%` }}
@@ -567,14 +571,14 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </div>
 
             {dailyCo2 >= goalCo2 ? (
-              <div className="mt-3 bg-green-100/90 border border-green-300 px-4 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-2 animate-in zoom-in duration-300">
-                <Sparkles className="w-4 h-4 text-green-600 animate-pulse shrink-0" />
-                <span className="text-green-700 font-black text-xs uppercase tracking-widest">
+              <div className="mt-2 sm:mt-3 bg-green-100/90 border border-green-300 px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl shadow-sm flex items-center justify-center gap-1.5 sm:gap-2 animate-in zoom-in duration-300">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 animate-pulse shrink-0" />
+                <span className="text-green-700 font-black text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-center leading-tight">
                   ¡Ya alcanzaste tu meta de hoy!
                 </span>
               </div>
             ) : (
-              <p className="text-xs text-stone-500 font-bold flex justify-between uppercase tracking-wide mt-3 px-1">
+              <p className="text-[10px] sm:text-xs text-stone-500 font-bold flex flex-col sm:flex-row sm:justify-between gap-0.5 uppercase tracking-wide mt-2 sm:mt-3 px-0.5 sm:px-1">
                 <span>Progreso diario</span>
                 <span>Meta: {goalCo2} kg</span>
               </p>
@@ -582,25 +586,29 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
           </div>
 
           {/* TARJETA ODS 3: CALORÍAS */}
-          <div className="bg-white/80 backdrop-blur-2xl p-6 sm:p-7 rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
-            <div>
-              <div className="flex justify-between items-start mb-5 sm:mb-6">
-                <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-3.5 sm:p-4 rounded-2xl shadow-inner transition-transform duration-300 border border-white">
-                  <AnimatedHeartIcon className="w-6 h-6 md:w-8 md:h-8 text-orange-600" />
+          <div className="min-w-0 bg-white/80 backdrop-blur-2xl p-3.5 sm:p-7 rounded-2xl sm:rounded-[2rem] border border-white/60 shadow-2xl shadow-black/20 hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between h-full">
+            <div className="min-w-0">
+              <div className="flex justify-between items-start gap-1.5 mb-3 sm:mb-6">
+                <div className="bg-gradient-to-br from-orange-100 to-orange-200 p-2 sm:p-4 rounded-xl sm:rounded-2xl shadow-inner transition-transform duration-300 border border-white shrink-0">
+                  <AnimatedHeartIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-orange-600" />
                 </div>
-                <span className="text-orange-700 font-black bg-white px-4 py-1.5 rounded-full text-xs tracking-widest uppercase border border-orange-200 shadow-sm">
+                <span className="text-orange-700 font-black bg-white px-2 sm:px-4 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs tracking-wider sm:tracking-widest uppercase border border-orange-200 shadow-sm shrink-0">
                   ODS 3
                 </span>
               </div>
-              <h3 className="text-stone-500 font-bold uppercase tracking-wider text-xs mb-1">Calorías Quemadas Hoy</h3>
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-4xl sm:text-5xl font-black text-stone-800 tracking-tighter">{dailyCal}</span>
-                <span className="text-stone-500 font-bold">kcal</span>
+              <h3 className="text-stone-500 font-bold uppercase tracking-wide sm:tracking-wider text-[10px] sm:text-xs mb-1 leading-tight break-words">
+                Calorías Quemadas Hoy
+              </h3>
+              <div className="flex flex-wrap items-baseline gap-1 mb-1 min-w-0">
+                <span className="text-2xl sm:text-5xl font-black text-stone-800 tracking-tighter leading-none truncate">
+                  {dailyCal}
+                </span>
+                <span className="text-xs sm:text-base text-stone-500 font-bold">kcal</span>
               </div>
-              <p className="text-[11px] text-stone-400 font-bold mb-3">
+              <p className="text-[10px] sm:text-[11px] text-stone-400 font-bold mb-2 sm:mb-3 leading-tight break-words">
                 Acumulado histórico: {calories} kcal
               </p>
-              <div className="w-full bg-stone-200/50 rounded-full h-4 mb-2 overflow-hidden shadow-inner border border-stone-200/50">
+              <div className="w-full bg-stone-200/50 rounded-full h-2.5 sm:h-4 mb-1.5 sm:mb-2 overflow-hidden shadow-inner border border-stone-200/50">
                 <div
                   className="bg-gradient-to-r from-orange-400 to-rose-500 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(251,146,60,0.8)] relative"
                   style={{ width: `${calPercent}%` }}
@@ -611,14 +619,14 @@ export default function DashboardScreen({ onLogout }: { onLogout: () => void }) 
             </div>
 
             {dailyCal >= goalCalories ? (
-              <div className="mt-3 bg-orange-100/90 border border-orange-300 px-4 py-2.5 rounded-xl shadow-sm flex items-center justify-center gap-2 animate-in zoom-in duration-300">
-                <Flame className="w-4 h-4 text-orange-600 animate-pulse shrink-0" />
-                <span className="text-orange-700 font-black text-xs uppercase tracking-widest">
+              <div className="mt-2 sm:mt-3 bg-orange-100/90 border border-orange-300 px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl shadow-sm flex items-center justify-center gap-1.5 sm:gap-2 animate-in zoom-in duration-300">
+                <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600 animate-pulse shrink-0" />
+                <span className="text-orange-700 font-black text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest text-center leading-tight">
                   ¡Ya alcanzaste tu meta de hoy!
                 </span>
               </div>
             ) : (
-              <p className="text-xs text-stone-500 font-bold flex justify-between uppercase tracking-wide mt-3 px-1">
+              <p className="text-[10px] sm:text-xs text-stone-500 font-bold flex flex-col sm:flex-row sm:justify-between gap-0.5 uppercase tracking-wide mt-2 sm:mt-3 px-0.5 sm:px-1">
                 <span>Progreso diario</span>
                 <span>Meta: {goalCalories} kcal</span>
               </p>
