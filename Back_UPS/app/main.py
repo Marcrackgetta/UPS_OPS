@@ -1,17 +1,15 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 
 # Importar los enrutadores
-from app.routers import acciones_router
-from app.routers import dashboard_router
+from app.routers import acciones_router, dashboard_router
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 # Inicializar FastAPI
 app = FastAPI(title=settings.PROJECT_NAME)
 
 # Configuración CORS
-# Evitamos allow_origins=["*"] cuando usamos credenciales.
 origins = [
     settings.FRONTEND_URL,
     "http://localhost:3000",
